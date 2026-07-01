@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoltEcuador - Dashboard Estratégico Inteligente</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome para Íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .sidebar-item.active {
+            background-color: #1e293b;
+            border-left: 4px solid #10b981;
+            color: #10b981;
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex">
+
+    <!-- Sidebar / Navegación Lateral -->
+    <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between hidden md:flex">
+        <div class="p-6">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="bg-emerald-500 text-slate-950 p-2 rounded-lg font-bold text-xl">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-none">VoltEcuador</h1>
+                    <span class="text-xs text-slate-400">Gobernanza Inteligente</span>
+                </div>
+            </div>
+            
+            <nav class="space-y-1">
+                <button onclick="switchTab('resumen')" id="btn-resumen" class="sidebar-item active w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 transition-all">
+                    <i class="fas fa-chart-pie w-5"></i> Resumen Ejecutivo
+                </button>
+                <button onclick="switchTab('matrices')" id="btn-matrices" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 transition-all">
+                    <i class="fas fa-table w-5"></i> Matrices (EFE / EFI)
+                </button>
+                <button onclick="switchTab('kpis')" id="btn-kpis" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 transition-all">
+                    <i class="fas fa-tasks w-5"></i> KPIs y Objetivos
+                </button>
+            </nav>
+        </div>
+        
+        <div class="p-4 border-t border-slate-800 text-xs text-slate-500 text-center">
+            VoltEcuador © 2026 <br> Planificación de Postventa
+        </div>
+    </aside>
+
+    <!-- Contenido Principal -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+        <!-- Header Superior -->
+        <header class="h-16 border-b border-slate-800 bg-slate-900/50 backdrop-blur flex items-center justify-between px-6 sticky top-0 z-10">
+            <div class="flex items-center gap-4">
+                <h2 id="current-title" class="text-xl font-semibold text-slate-200">Resumen Ejecutivo</h2>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="text-right hidden sm:block">
+                    <p class="text-sm font-medium">Panel de Control de Clientes</p>
+                    <p class="text-xs text-emerald-400 font-mono">+4,000 Activos</p>
+                </div>
+                <button onclick="resetData()" class="bg-slate-800 hover:bg-rose-900/30 hover:text-rose-400 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 border border-slate-700 transition-colors">
+                    <i class="fas fa-undo mr-1"></i> Reiniciar Datos
+                </button>
+            </div>
+        </header>
+
+        <!-- Contenedor Dinámico de Pestañas -->
+        <div class="p-6 max-w-7xl w-full mx-auto space-y-6">
+
+            <!-- PESTAÑA 1: RESUMEN EJECUTIVO -->
+            <section id="tab-resumen" class="tab-content active space-y-6">
+                <!-- Tarjetas de Impacto Rápido -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-sm">
+                        <div class="flex justify-between items-start text-slate-400 mb-2">
+                            <span class="text-sm font-medium">Eficiencia Logística Postventa</span>
+                            <i class="fas fa-truck-loading text-emerald-400 text-lg"></i>
+                        </div>
+                        <div class="text-3xl font-bold text-slate-100">92.4%</div>
+                        <div class="text-xs text-emerald-400 mt-2 flex items-center gap-1">
+                            <i class="fas fa-arrow-up"></i> <span>En rango óptimo (Semáforo Verde)</span>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-sm">
+                        <div class="flex justify-between items-start text-slate-400 mb-2">
+                            <span class="text-sm font-medium">Tasa de Fidelización</span>
+                            <i class="fas fa-heart text-blue-400 text-lg"></i>
+                        </div>
+                        <div class="text-3xl font-bold text-slate-100">87.5%</div>
+                        <div class="text-xs text-blue-400 mt-2 flex items-center gap-1">
+                            <i class="fas fa-sync"></i> <span>Meta Q3: Alcanzar el 90%</span>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-sm">
+                        <div class="flex justify-between items-start text-slate-400 mb-2">
+                            <span class="text-sm font-medium">Clientes Activos Monitoreados</span>
+                            <i class="fas fa-users text-purple-400 text-lg"></i>
+                        </div>
+                        <div class="text-3xl font-bold text-slate-100 font-mono">4,250</div>
+                        <div class="text-xs text-purple-400 mt-2">Base de Datos Centralizada de Ecuador</div>
+                    </div>
+                </div>
+
+                <!-- Gráfico e Insights -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl lg:col-span-2">
+                        <h3 class="text-sm font-semibold text-slate-400 mb-4 uppercase tracking-wider">Evolución de Rendimiento Trimestral</h3>
+                        <div class="h-64 flex items-center justify-center">
+                            <canvas id="chartRendimiento"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-sm font-semibold text-slate-400 mb-4 uppercase tracking-wider">Recomendaciones del Sistema AI</h3>
+                            <div class="space-y-3">
+                                <div class="p-3 bg-emerald-950/30 border border-emerald-900/50 rounded-lg text-xs text-emerald-200">
+                                    <strong class="block mb-1">✓ Logística Fortalecida:</strong> El pilar EFI refleja una excelente respuesta en los talleres autorizados. Mantener stock crítico.
+                                </div>
+                                <div class="p-3 bg-amber-950/30 border border-amber-900/50 rounded-lg text-xs text-amber-200">
+                                    <strong class="block mb-1">⚠ Alerta PESTEL / EFE:</strong> Regulaciones de importación de repuestos eléctricos podrían variar en el próximo trimestre.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pt-4 border-t border-slate-800 text-center text-xs text-slate-400 italic">
+                            Alineado al plan estratégico de movilidad sostenible.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PESTAÑA 2: MATRICES EFE / EFI -->
+            <section id="tab-matrices" class="tab-content space-y-6">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+                    <div class="p-5 border-b border-slate-800 bg-slate-900/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-lg font-semibold">Configuración de Factores Estratégicos</h3>
+                            <p class="text-xs text-slate-400">Modifica los pesos y calificaciones directamente. Los cambios se guardan automáticamente en tu navegador.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6 space-y-8">
+                        <!-- Matriz EFI -->
+                        <div>
+                            <h4 class="text-sm font-bold text-emerald-400 uppercase tracking-wider mb-3"><i class="fas fa-shield-alt mr-2"></i>Matriz de Evaluación de Factores Internos (EFI)</h4>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse text-sm">
+                                    <thead>
+                                        <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase">
+                                            <th class="py-3 px-4 w-3/5">Factor Crítico de Éxito (Fortalezas / Debilidades)</th>
+                                            <th class="py-3 px-4 text-center">Peso (0-1)</th>
+                                            <th class="py-3 px-4 text-center">Calificación (1-4)</th>
+                                            <th class="py-3 px-4 text-right">Puntuación Ponderada</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table-efi-body" class="divide-y divide-slate-800/50">
+                                        <!-- Generado dinámicamente -->
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="bg-slate-950/60 font-bold border-t-2 border-slate-800">
+                                            <td class="py-3 px-4 text-right text-slate-400 text-xs uppercase">Total Ponderado EFI:</td>
+                                            <td id="efi-total-peso" class="py-3 px-4 text-center text-slate-400 font-mono">1.00</td>
+                                            <td></td>
+                                            <td id="efi-total-score" class="py-3 px-4 text-right text-emerald-400 font-mono text-base">0.00</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Matriz EFE -->
+                        <div>
+                            <h4 class="text-sm font-bold text-blue-400 uppercase tracking-wider mb-3"><i class="fas fa-globe mr-2"></i>Matriz de Evaluación de Factores Externos (EFE)</h4>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse text-sm">
+                                    <thead>
+                                        <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase">
+                                            <th class="py-3 px-4 w-3/5">Factor Crítico de Éxito (Oportunidades / Amenazas)</th>
+                                            <th class="py-3 px-4 text-center">Peso (0-1)</th>
+                                            <th class="py-3 px-4 text-center">Calificación (1-4)</th>
+                                            <th class="py-3 px-4 text-right">Puntuación Ponderada</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table-efe-body" class="divide-y divide-slate-800/50">
+                                        <!-- Generado dinámicamente -->
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="bg-slate-950/60 font-bold border-t-2 border-slate-800">
+                                            <td class="py-3 px-4 text-right text-slate-400 text-xs uppercase">Total Ponderado EFE:</td>
+                                            <td id="efe-total-peso" class="py-3 px-4 text-center text-slate-400 font-mono">1.00</td>
+                                            <td></td>
+                                            <td id="efe-total-score" class="py-3 px-4 text-right text-blue-400 font-mono text-base">0.00</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PESTAÑA 3: KPIS Y OBJETIVOS -->
+            <section id="tab-kpis" class="tab-content space-y-6">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+                    <h3 class="text-lg font-semibold mb-2">Monitoreo Operativo y Semáforos de Desempeño</h3>
+                    <p class="text-xs text-slate-400 mb-6">Plan de hitos temporales para la fidelización y control logístico en la red de postventa.</p>
+                    
+                    <div class="space-y-4">
+                        <!-- KPI 1 -->
+                        <div class="p-4 bg-slate-950/50 border border-slate-800 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                    <h4 class="font-medium text-slate-200 text-sm">Tiempo de respuesta en soporte técnico técnico postventa</h4>
+                                </div>
+                                <p class="text-xs text-slate-400">Meta Hito: Menos de 24 horas para diagnóstico inicial.</p>
+                            </div>
+                            <div class="flex items-center gap-6">
+                                <div class="text-right">
+                                    <span class="text-xs text-slate-500 block">Actual</span>
+                                    <span class="font-mono text-sm font-semibold text-emerald-400">18.5 horas</span>
+                                </div>
+                                <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 font-medium text-xs border border-emerald-500/20">Óptimo</span>
+                            </div>
+                        </div>
+
+                        <!-- KPI 2 -->
+                        <div class="p-4 bg-slate-950/50 border border-slate-800 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                                    <h4 class="font-medium text-slate-200 text-sm">Disponibilidad de repuestos críticos en Cuenca</h4>
+                                </div>
+                                <p class="text-xs text-slate-400">Meta Hito: Mantener stock del 95% de alta rotación.</p>
+                            </div>
+                            <div class="flex items-center gap-6">
+                                <div class="text-right">
+                                    <span class="text-xs text-slate-500 block">Actual</span>
+                                    <span class="font-mono text-sm font-semibold text-amber-400">89.1%</span>
+                                </div>
+                                <span class="px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 font-medium text-xs border border-amber-500/20">Precaución</span>
+                            </div>
+                        </div>
+
+                        <!-- KPI 3 -->
+                        <div class="p-4 bg-slate-950/50 border border-slate-800 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                                    <h4 class="font-medium text-slate-200 text-sm">Tasa de retención de clientes corporativos postventa</h4>
+                                </div>
+                                <p class="text-xs text-slate-400">Meta Hito: Retener el 95% de las flotas activas de vehículos eléctricos.</p>
+                            </div>
+                            <div class="flex items-center gap-6">
+                                <div class="text-right">
+                                    <span class="text-xs text-slate-500 block">Actual</span>
+                                    <span class="font-mono text-sm font-semibold text-rose-400">78.0%</span>
+                                </div>
+                                <span class="px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-400 font-medium text-xs border border-rose-500/20">Crítico</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- LÓGICA DE JAVASCRIPT -->
+    <script>
+        // Datos por defecto basados en la planeación estratégica de VoltEcuador
+        const defaultData = {
+            efi: [
+                { id: 'f1', tipo: 'Fortaleza', factor: 'Red de talleres autorizados con soporte técnico especializado', peso: 0.20, calif: 4 },
+                { id: 'f2', tipo: 'Fortaleza', factor: 'Cartera consolidada de más de 4,000 clientes activos en el país', peso: 0.15, calif: 4 },
+                { id: 'f3', tipo: 'Fortaleza', factor: 'Sistemas de monitoreo digital para gestión de flotas', peso: 0.15, calif: 3 },
+                { id: 'd1', tipo: 'Debilidad', factor: 'Tiempos de entrega variables en repuestos de importación crítica', peso: 0.30, calif: 2 },
+                { id: 'd2', tipo: 'Debilidad', factor: 'Bajo alcance de campañas de fidelización para clientes antiguos', peso: 0.20, calif: 1 }
+            ],
+            efe: [
+                { id: 'o1', tipo: 'Oportunidad', factor: 'Políticas gubernamentales que incentivan la transición a movilidad eléctrica', peso: 0.25, calif: 4 },
+                { id: 'o2', tipo: 'Oportunidad', factor: 'Creciente demanda corporativa por reducir la huella de carbono logística', peso: 0.20, calif: 3 },
+                { id: 'a1', tipo: 'Amenaza', factor: 'Inestabilidad en las cadenas de suministro globales y aranceles', peso: 0.30, calif: 2 },
+                { id: 'a2', tipo: 'Amenaza', factor: 'Ingreso de nuevos competidores con plataformas de postventa low-cost', peso: 0.25, calif: 2 }
+            ]
+        };
+
+        let appData = JSON.parse(localStorage.getItem('voltEcuadorData')) || { ...defaultData };
+
+        // Inicialización al cargar la página
+        window.addEventListener('load', () => {
+            renderMatrices();
+            initChart();
+        });
+
+        // Cambiar entre pestañas
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            document.getElementById(`btn-${tabId}`).classList.add('active');
+            
+            // Cambiar título superior
+            const titles = { resumen: 'Resumen Ejecutivo', matrices: 'Matrices de Entrada (EFE / EFI)', kpis: 'Hitos y KPIs con Semáforo' };
+            document.getElementById('current-title').innerText = titles[tabId];
+        }
+
+        // Renderizar las tablas EFE y EFI interactivos
+        function renderMatrices() {
+            renderTable('efi', 'table-efi-body');
+            renderTable('efe', 'table-efe-body');
+            calculateTotals();
+        }
+
+        function renderTable(matrixKey, bodyId) {
+            const tbody = document.getElementById(bodyId);
+            tbody.innerHTML = '';
+
+            appData[matrixKey].forEach((item, index) => {
+                const ponderado = (item.peso * item.calif).toFixed(2);
+                const tagColor = item.tipo === 'Fortaleza' || item.tipo === 'Oportunidad' ? 'text-emerald-400 bg-emerald-500/10' : 'text-rose-400 bg-rose-500/10';
+
+                const row = document.createElement('tr');
+                row.className = "hover:bg-slate-900/40 transition-colors";
+                row.innerHTML = `
+                    <td class="py-3 px-4">
+                        <div class="flex items-center gap-2">
+                            <span class="px-1.5 py-0.5 text-[10px] uppercase font-bold rounded ${tagColor}">${item.tipo[0]}</span>
+                            <span class="text-slate-300">${item.factor}</span>
+                        </div>
+                    </td>
+                    <td class="py-3 px-4 text-center">
+                        <input type="number" step="0.01" min="0" max="1" value="${item.peso}" 
+                            onchange="updateValue('${matrixKey}', ${index}, 'peso', this.value)"
+                            class="bg-slate-800 border border-slate-700 rounded px-2 py-1 text-center w-16 font-mono text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+                    </td>
+                    <td class="py-3 px-4 text-center">
+                        <select onchange="updateValue('${matrixKey}', ${index}, 'calif', this.value)"
+                            class="bg-slate-800 border border-slate-700 rounded px-2 py-1 text-center w-14 font-mono text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+                            <option value="1" ${item.calif == 1 ? 'selected' : ''}>1</option>
+                            <option value="2" ${item.calif == 2 ? 'selected' : ''}>2</option>
+                            <option value="3" ${item.calif == 3 ? 'selected' : ''}>3</option>
+                            <option value="4" ${item.calif == 4 ? 'selected' : ''}>4</option>
+                        </select>
+                    </td>
+                    <td class="py-3 px-4 text-right font-mono text-slate-200">${ponderado}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Actualizar valores en memoria y LocalStorage
+        function updateValue(matrixKey, index, field, value) {
+            appData[matrixKey][index][field] = parseFloat(value);
+            localStorage.setItem('voltEcuadorData', JSON.stringify(appData));
+            renderMatrices();
+        }
+
+        // Calcular los totales e indicar el estado
+        function calculateTotals() {
+            let efiTotalPeso = 0, efiTotalScore = 0;
+            appData.efi.forEach(item => {
+                efiTotalPeso += item.peso;
+                efiTotalScore += (item.peso * item.calif);
+            });
+
+            let efeTotalPeso = 0, efeTotalScore = 0;
+            appData.efe.forEach(item => {
+                efeTotalPeso += item.peso;
+                efeTotalScore += (item.peso * item.calif);
+            });
+
+            document.getElementById('efi-total-peso').innerText = efiTotalPeso.toFixed(2);
+            document.getElementById('efi-total-score').innerText = efiTotalScore.toFixed(2);
+            document.getElementById('efe-total-peso').innerText = efeTotalPeso.toFixed(2);
+            document.getElementById('efe-total-score').innerText = efeTotalScore.toFixed(2);
+        }
+
+        // Inicializar Gráfico con Chart.js
+        function initChart() {
+            const ctx = document.getElementById('chartRendimiento').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Q1 2026', 'Q2 2026', 'Q3 (Predicción)', 'Q4 (Meta)'],
+                    datasets: [{
+                        label: 'Índice de Fidelización de Flotas',
+                        data: [79, 84, 87.5, 95],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } },
+                        x: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } }
+                    }
+                }
+            });
+        }
+
+        // Reiniciar aplicación a valores iniciales
+        function resetData() {
+            if(confirm('¿Seguro que deseas restaurar las configuraciones por defecto de las matrices?')) {
+                localStorage.removeItem('voltEcuadorData');
+                appData = {
+                    efi: [
+                        { id: 'f1', tipo: 'Fortaleza', factor: 'Red de talleres autorizados con soporte técnico especializado', peso: 0.20, calif: 4 },
+                        { id: 'f2', tipo: 'Fortaleza', factor: 'Cartera consolidada de más de 4,000 clientes activos en el país', peso: 0.15, calif: 4 },
+                        { id: 'f3', tipo: 'Fortaleza', factor: 'Sistemas de monitoreo digital para gestión de flotas', peso: 0.15, calif: 3 },
+                        { id: 'd1', tipo: 'Debilidad', factor: 'Tiempos de entrega variables en repuestos de importación crítica', peso: 0.30, calif: 2 },
+                        { id: 'd2', tipo: 'Debilidad', factor: 'Bajo alcance de campañas de fidelización para clientes antiguos', peso: 0.20, calif: 1 }
+                    ],
+                    efe: [
+                        { id: 'o1', tipo: 'Oportunidad', factor: 'Políticas gubernamentales que incentivan la transición a movilidad eléctrica', peso: 0.25, calif: 4 },
+                        { id: 'o2', tipo: 'Oportunidad', factor: 'Creciente demanda corporativa por reducir la huella de carbono logística', peso: 0.20, calif: 3 },
+                        { id: 'a1', tipo: 'Amenaza', factor: 'Inestabilidad en las cadenas de suministro globales y aranceles', peso: 0.30, calif: 2 },
+                        { id: 'a2', tipo: 'Amenaza', factor: 'Ingreso de nuevos competidores con plataformas de postventa low-cost', peso: 0.25, calif: 2 }
+                    ]
+                };
+                renderMatrices();
+            }
+        }
+    </script>
+</body>
+</html>
