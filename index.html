@@ -3,436 +3,502 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VoltEcuador - Dashboard Estratégico Inteligente</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- FontAwesome para Íconos -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Cuadro de Mando Estratégico</title>
     <style>
-        .sidebar-item.active {
-            background-color: #1e293b;
-            border-left: 4px solid #10b981;
-            color: #10b981;
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #16a085;
+            --accent-color: #e74c3c;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
         }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), #34495e);
+            color: #fff;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        header p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.8;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Sistema de Pestañas Nav */
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab-btn {
+            background-color: #e0e0e0;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px 4px 0 0;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            background-color: #d0d0d0;
+        }
+
+        .tab-btn.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        /* Contenido de las Pestañas */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Tarjetas y Contenedores genéricos */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        h2, h3 {
+            color: var(--primary-color);
+            border-left: 5px solid var(--secondary-color);
+            padding-left: 0.5rem;
+        }
+
+        /* Tablas de las Matrices */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .total-row {
+            font-weight: bold;
+            background-color: #eaeded;
+        }
+
+        /* Listas y Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background-color: #e8f8f5;
+            color: var(--secondary-color);
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .badge-threat {
+            background-color: #fdebd0;
+            color: #e67e22;
+        }
+
+        .alert-box {
+            background-color: #ebf5fb;
+            border-left: 5px solid #3498db;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+
+        /* Cuadrantes FODA */
+        .foda-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .foda-quadrant {
+            padding: 1rem;
+            border-radius: 6px;
+        }
+
+        .foda-f { background-color: #e8f8f5; border: 1px solid #a3e4d7; }
+        .foda-d { background-color: #fead9a33; border: 1px solid #f5b7b1; }
+        .foda-o { background-color: #eaf2f8; border: 1px solid #a9cce3; }
+        .foda-a { background-color: #fef9e7; border: 1px solid #f9e79f; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .grid-2, .foda-container {
+                grid-template-columns: 1fr;
+            }
+            .nav-tabs {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex">
+<body>
 
-    <!-- Sidebar / Navegación Lateral -->
-    <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between hidden md:flex">
-        <div class="p-6">
-            <div class="flex items-center gap-3 mb-8">
-                <div class="bg-emerald-500 text-slate-950 p-2 rounded-lg font-bold text-xl">
-                    <i class="fas fa-bolt"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-lg leading-none">VoltEcuador</h1>
-                    <span class="text-xs text-slate-400">Gobernanza Inteligente</span>
-                </div>
-            </div>
-            
-            <nav class="space-y-1">
-                <button onclick="switchTab('resumen')" id="btn-resumen" class="sidebar-item active w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 transition-all">
-                    <i class="fas fa-chart-pie w-5"></i> Resumen Ejecutivo
-                </button>
-                <button onclick="switchTab('matrices')" id="btn-matrices" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 transition-all">
-                    <i class="fas fa-table w-5"></i> Matrices (EFE / EFI)
-                </button>
-                <button onclick="switchTab('kpis')" id="btn-kpis" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 transition-all">
-                    <i class="fas fa-tasks w-5"></i> KPIs y Objetivos
-                </button>
-            </nav>
-        </div>
+    <header>
+        <h1>Plataforma de Control Estratégico</h1>
+        <p>Análisis de Caso: VoltEcuador & PedidosYa | Estudiante: Dayanna García</p>
+    </header>
+
+    <div class="container">
         
-        <div class="p-4 border-t border-slate-800 text-xs text-slate-500 text-center">
-            VoltEcuador © 2026 <br> Planificación de Postventa
-        </div>
-    </aside>
+        <nav class="nav-tabs">
+            <button class="tab-btn active" onclick="openTab(event, 'pestel-foda')">PESTEL, Sinergias y FODA</button>
+            <button class="tab-btn" onclick="openTab(event, 'matrices-efe-efi')">Matrices EFE y EFI</button>
+            <button class="tab-btn" onclick="openTab(event, 'competitivo')">Análisis Competitivo (MPC / McKinsey)</button>
+            <button class="tab-btn" onclick="openTab(event, 'peyea-gran')">PEYEA y Gran Estrategia</button>
+            <button class="tab-btn" onclick="openTab(event, 'pedidosya')">Caso Práctico: PedidosYa</button>
+        </nav>
 
-    <!-- Contenido Principal -->
-    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
-        <!-- Header Superior -->
-        <header class="h-16 border-b border-slate-800 bg-slate-900/50 backdrop-blur flex items-center justify-between px-6 sticky top-0 z-10">
-            <div class="flex items-center gap-4">
-                <h2 id="current-title" class="text-xl font-semibold text-slate-200">Resumen Ejecutivo</h2>
+        <div id="pestel-foda" class="tab-content active">
+            <div class="grid-2">
+                <div class="card">
+                    <h2>Clasificación PESTEL (VoltEcuador)</h2>
+                    <ul>
+                        <li><span class="badge">Político</span> Propuesta de reforma tributaria. Meta del 10% de flotas públicas para 2025.</li>
+                        <li><span class="badge">Económico</span> Desaceleración del PIB. Incremento de tasas de interés.</li>
+                        <li><span class="badge">Sociocultural</span> Descontento con el transporte público.</li>
+                        <li><span class="badge">Tecnológico</span> Reducción del costo de baterías.</li>
+                        <li><span class="badge">Legal</span> Ley de Emprendimiento e Innovación. Normativa INEN 2850. Exención de Pico y Placa en Quito.</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h2>Análisis de Factores Cruzados</h2>
+                    <h3>Efectos Sinergicos</h3>
+                    <ul>
+                        <li>Ambiental + Social</li>
+                        <li>Político + Tecnológico</li>
+                        <li>Tecnológico + Económico</li>
+                    </ul>
+                    <h3>Efectos Contradictorios</h3>
+                    <ul>
+                        <li>Social + Económico</li>
+                        <li>Político + Económico</li>
+                        <li>Tecnológico + Infraestructura</li>
+                    </ul>
+                </div>
             </div>
-            <div class="flex items-center gap-4">
-                <div class="text-right hidden sm:block">
-                    <p class="text-sm font-medium">Panel de Control de Clientes</p>
-                    <p class="text-xs text-emerald-400 font-mono">+4,000 Activos</p>
+
+            <div class="card">
+                <h2>Matriz FODA Unificada</h2>
+                <div class="foda-container">
+                    <div class="foda-quadrant foda-f">
+                        <h3>Fortalezas</h3>
+                        <ul>
+                            <li>Servicio postventa diferenciado.</li>
+                            <li>Alianzas estratégicas comerciales.</li>
+                            <li>Infraestructura física y digital sólida.</li>
+                            <li>Personal altamente capacitado.</li>
+                            <li>Base de datos con más de 12,000 clientes.</li>
+                        </ul>
+                    </div>
+                    <div class="foda-quadrant foda-d">
+                        <h3>Debilidades</h3>
+                        <ul>
+                            <li>Falta de inventarios de repuestos.</li>
+                            <li>Alta rotación de personal técnico.</li>
+                            <li>Limitado presupuesto de marketing digital.</li>
+                            <li>Dependencia de proveedores internacionales.</li>
+                            <li>Procesos logísticos lentos.</li>
+                        </ul>
+                    </div>
+                    <div class="foda-quadrant foda-o">
+                        <h3>Oportunidades</h3>
+                        <ul>
+                            <li>Meta de electrificación de flotas públicas.</li>
+                            <li>Exención de Pico y Placa en ciudades principales.</li>
+                            <li>Crecimiento del mercado de vehículos eléctricos.</li>
+                            <li>Tendencia mundial hacia la energía renovable.</li>
+                        </ul>
+                    </div>
+                    <div class="foda-quadrant foda-a">
+                        <h3>Amenazas</h3>
+                        <ul>
+                            <li>Riesgo de eliminación de exención arancelaria.</li>
+                            <li>Estricta restricción gubernamental / Normas INEN.</li>
+                            <li>Conflictos de estándares de carga.</li>
+                            <li>Guerra de precios en el sector.</li>
+                            <li>Alza de tasas de interés.</li>
+                        </ul>
+                    </div>
                 </div>
-                <button onclick="resetData()" class="bg-slate-800 hover:bg-rose-900/30 hover:text-rose-400 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 border border-slate-700 transition-colors">
-                    <i class="fas fa-undo mr-1"></i> Reiniciar Datos
-                </button>
             </div>
-        </header>
-
-        <!-- Contenedor Dinámico de Pestañas -->
-        <div class="p-6 max-w-7xl w-full mx-auto space-y-6">
-
-            <!-- PESTAÑA 1: RESUMEN EJECUTIVO -->
-            <section id="tab-resumen" class="tab-content active space-y-6">
-                <!-- Tarjetas de Impacto Rápido -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-sm">
-                        <div class="flex justify-between items-start text-slate-400 mb-2">
-                            <span class="text-sm font-medium">Eficiencia Logística Postventa</span>
-                            <i class="fas fa-truck-loading text-emerald-400 text-lg"></i>
-                        </div>
-                        <div class="text-3xl font-bold text-slate-100">92.4%</div>
-                        <div class="text-xs text-emerald-400 mt-2 flex items-center gap-1">
-                            <i class="fas fa-arrow-up"></i> <span>En rango óptimo (Semáforo Verde)</span>
-                        </div>
-                    </div>
-                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-sm">
-                        <div class="flex justify-between items-start text-slate-400 mb-2">
-                            <span class="text-sm font-medium">Tasa de Fidelización</span>
-                            <i class="fas fa-heart text-blue-400 text-lg"></i>
-                        </div>
-                        <div class="text-3xl font-bold text-slate-100">87.5%</div>
-                        <div class="text-xs text-blue-400 mt-2 flex items-center gap-1">
-                            <i class="fas fa-sync"></i> <span>Meta Q3: Alcanzar el 90%</span>
-                        </div>
-                    </div>
-                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-sm">
-                        <div class="flex justify-between items-start text-slate-400 mb-2">
-                            <span class="text-sm font-medium">Clientes Activos Monitoreados</span>
-                            <i class="fas fa-users text-purple-400 text-lg"></i>
-                        </div>
-                        <div class="text-3xl font-bold text-slate-100 font-mono">4,250</div>
-                        <div class="text-xs text-purple-400 mt-2">Base de Datos Centralizada de Ecuador</div>
-                    </div>
-                </div>
-
-                <!-- Gráfico e Insights -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl lg:col-span-2">
-                        <h3 class="text-sm font-semibold text-slate-400 mb-4 uppercase tracking-wider">Evolución de Rendimiento Trimestral</h3>
-                        <div class="h-64 flex items-center justify-center">
-                            <canvas id="chartRendimiento"></canvas>
-                        </div>
-                    </div>
-                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl flex flex-col justify-between">
-                        <div>
-                            <h3 class="text-sm font-semibold text-slate-400 mb-4 uppercase tracking-wider">Recomendaciones del Sistema AI</h3>
-                            <div class="space-y-3">
-                                <div class="p-3 bg-emerald-950/30 border border-emerald-900/50 rounded-lg text-xs text-emerald-200">
-                                    <strong class="block mb-1">✓ Logística Fortalecida:</strong> El pilar EFI refleja una excelente respuesta en los talleres autorizados. Mantener stock crítico.
-                                </div>
-                                <div class="p-3 bg-amber-950/30 border border-amber-900/50 rounded-lg text-xs text-amber-200">
-                                    <strong class="block mb-1">⚠ Alerta PESTEL / EFE:</strong> Regulaciones de importación de repuestos eléctricos podrían variar en el próximo trimestre.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="pt-4 border-t border-slate-800 text-center text-xs text-slate-400 italic">
-                            Alineado al plan estratégico de movilidad sostenible.
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- PESTAÑA 2: MATRICES EFE / EFI -->
-            <section id="tab-matrices" class="tab-content space-y-6">
-                <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
-                    <div class="p-5 border-b border-slate-800 bg-slate-900/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div>
-                            <h3 class="text-lg font-semibold">Configuración de Factores Estratégicos</h3>
-                            <p class="text-xs text-slate-400">Modifica los pesos y calificaciones directamente. Los cambios se guardan automáticamente en tu navegador.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="p-6 space-y-8">
-                        <!-- Matriz EFI -->
-                        <div>
-                            <h4 class="text-sm font-bold text-emerald-400 uppercase tracking-wider mb-3"><i class="fas fa-shield-alt mr-2"></i>Matriz de Evaluación de Factores Internos (EFI)</h4>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left border-collapse text-sm">
-                                    <thead>
-                                        <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase">
-                                            <th class="py-3 px-4 w-3/5">Factor Crítico de Éxito (Fortalezas / Debilidades)</th>
-                                            <th class="py-3 px-4 text-center">Peso (0-1)</th>
-                                            <th class="py-3 px-4 text-center">Calificación (1-4)</th>
-                                            <th class="py-3 px-4 text-right">Puntuación Ponderada</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="table-efi-body" class="divide-y divide-slate-800/50">
-                                        <!-- Generado dinámicamente -->
-                                    </tbody>
-                                    <tfoot>
-                                        <tr class="bg-slate-950/60 font-bold border-t-2 border-slate-800">
-                                            <td class="py-3 px-4 text-right text-slate-400 text-xs uppercase">Total Ponderado EFI:</td>
-                                            <td id="efi-total-peso" class="py-3 px-4 text-center text-slate-400 font-mono">1.00</td>
-                                            <td></td>
-                                            <td id="efi-total-score" class="py-3 px-4 text-right text-emerald-400 font-mono text-base">0.00</td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                        </div>
-
-                        <!-- Matriz EFE -->
-                        <div>
-                            <h4 class="text-sm font-bold text-blue-400 uppercase tracking-wider mb-3"><i class="fas fa-globe mr-2"></i>Matriz de Evaluación de Factores Externos (EFE)</h4>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left border-collapse text-sm">
-                                    <thead>
-                                        <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase">
-                                            <th class="py-3 px-4 w-3/5">Factor Crítico de Éxito (Oportunidades / Amenazas)</th>
-                                            <th class="py-3 px-4 text-center">Peso (0-1)</th>
-                                            <th class="py-3 px-4 text-center">Calificación (1-4)</th>
-                                            <th class="py-3 px-4 text-right">Puntuación Ponderada</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="table-efe-body" class="divide-y divide-slate-800/50">
-                                        <!-- Generado dinámicamente -->
-                                    </tbody>
-                                    <tfoot>
-                                        <tr class="bg-slate-950/60 font-bold border-t-2 border-slate-800">
-                                            <td class="py-3 px-4 text-right text-slate-400 text-xs uppercase">Total Ponderado EFE:</td>
-                                            <td id="efe-total-peso" class="py-3 px-4 text-center text-slate-400 font-mono">1.00</td>
-                                            <td></td>
-                                            <td id="efe-total-score" class="py-3 px-4 text-right text-blue-400 font-mono text-base">0.00</td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- PESTAÑA 3: KPIS Y OBJETIVOS -->
-            <section id="tab-kpis" class="tab-content space-y-6">
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-                    <h3 class="text-lg font-semibold mb-2">Monitoreo Operativo y Semáforos de Desempeño</h3>
-                    <p class="text-xs text-slate-400 mb-6">Plan de hitos temporales para la fidelización y control logístico en la red de postventa.</p>
-                    
-                    <div class="space-y-4">
-                        <!-- KPI 1 -->
-                        <div class="p-4 bg-slate-950/50 border border-slate-800 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                            <div class="space-y-1">
-                                <div class="flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                    <h4 class="font-medium text-slate-200 text-sm">Tiempo de respuesta en soporte técnico técnico postventa</h4>
-                                </div>
-                                <p class="text-xs text-slate-400">Meta Hito: Menos de 24 horas para diagnóstico inicial.</p>
-                            </div>
-                            <div class="flex items-center gap-6">
-                                <div class="text-right">
-                                    <span class="text-xs text-slate-500 block">Actual</span>
-                                    <span class="font-mono text-sm font-semibold text-emerald-400">18.5 horas</span>
-                                </div>
-                                <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 font-medium text-xs border border-emerald-500/20">Óptimo</span>
-                            </div>
-                        </div>
-
-                        <!-- KPI 2 -->
-                        <div class="p-4 bg-slate-950/50 border border-slate-800 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                            <div class="space-y-1">
-                                <div class="flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-                                    <h4 class="font-medium text-slate-200 text-sm">Disponibilidad de repuestos críticos en Cuenca</h4>
-                                </div>
-                                <p class="text-xs text-slate-400">Meta Hito: Mantener stock del 95% de alta rotación.</p>
-                            </div>
-                            <div class="flex items-center gap-6">
-                                <div class="text-right">
-                                    <span class="text-xs text-slate-500 block">Actual</span>
-                                    <span class="font-mono text-sm font-semibold text-amber-400">89.1%</span>
-                                </div>
-                                <span class="px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 font-medium text-xs border border-amber-500/20">Precaución</span>
-                            </div>
-                        </div>
-
-                        <!-- KPI 3 -->
-                        <div class="p-4 bg-slate-950/50 border border-slate-800 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                            <div class="space-y-1">
-                                <div class="flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
-                                    <h4 class="font-medium text-slate-200 text-sm">Tasa de retención de clientes corporativos postventa</h4>
-                                </div>
-                                <p class="text-xs text-slate-400">Meta Hito: Retener el 95% de las flotas activas de vehículos eléctricos.</p>
-                            </div>
-                            <div class="flex items-center gap-6">
-                                <div class="text-right">
-                                    <span class="text-xs text-slate-500 block">Actual</span>
-                                    <span class="font-mono text-sm font-semibold text-rose-400">78.0%</span>
-                                </div>
-                                <span class="px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-400 font-medium text-xs border border-rose-500/20">Crítico</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
         </div>
-    </main>
 
-    <!-- LÓGICA DE JAVASCRIPT -->
+        <div id="matrices-efe-efi" class="tab-content">
+            <div class="grid-2">
+                <div class="card">
+                    <h2>Matriz de Evaluación de Factores Externos (EFE)</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Factores Externos Clave</th>
+                                <th>Peso</th>
+                                <th>Calif.</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="4"><strong>Oportunidades</strong></td></tr>
+                            <tr><td>Crecimiento del mercado de vehículos eléctricos</td><td>0.15</td><td>4</td><td>0.60</td></tr>
+                            <tr><td>Meta de electrificación de flotas públicas</td><td>0.10</td><td>3</td><td>0.30</td></tr>
+                            <tr><td>Tendencia mundial hacia la energía renovable</td><td>0.10</td><td>3</td><td>0.30</td></tr>
+                            <tr><td>Avances tecnológicos y digitalización</td><td>0.10</td><td>3</td><td>0.30</td></tr>
+                            <tr><td>Exención de Pico y Placa (Ciudades principales)</td><td>0.05</td><td>2</td><td>0.10</td></tr>
+                            
+                            <tr><td colspan="4"><strong>Amenazas</strong></td></tr>
+                            <tr><td>Riesgo de eliminación de exención arancelaria</td><td>0.15</td><td>2</td><td>0.30</td></tr>
+                            <tr><td>Estricta restricción gubernamental</td><td>0.10</td><td>2</td><td>0.20</td></tr>
+                            <tr><td>Conflictos de estándares de carga</td><td>0.10</td><td>2</td><td>0.20</td></tr>
+                            <tr><td>Guerra de precios en el sector</td><td>0.10</td><td>2</td><td>0.20</td></tr>
+                            <tr><td>Alza de tasas de interés</td><td>0.05</td><td>3</td><td>0.15</td></tr>
+                            <tr class="total-row">
+                                <td>TOTAL</td><td>1.00</td><td>-</td><td>2.65</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="alert-box">
+                        <strong>Interpretación:</strong> El total de 2.65 indica que la empresa califica ligeramente por encima de la media en su capacidad para aprovechar oportunidades externas y mitigar amenazas, pero debe reaccionar con más fuerza ante la competencia.
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Matriz de Evaluación de Factores Internos (EFI)</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Factores Internos Clave</th>
+                                <th>Peso</th>
+                                <th>Calif.</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="4"><strong>Fortalezas</strong></td></tr>
+                            <tr><td>Servicio postventa diferenciado</td><td>0.15</td><td>4</td><td>0.60</td></tr>
+                            <tr><td>Infraestructura física y digital sólida</td><td>0.10</td><td>4</td><td>0.40</td></tr>
+                            <tr><td>Alianzas estratégicas comerciales</td><td>0.10</td><td>3</td><td>0.30</td></tr>
+                            <tr><td>Base de datos con más de 12,000 clientes</td><td>0.10</td><td>4</td><td>0.40</td></tr>
+                            <tr><td>Personal altamente capacitado</td><td>0.10</td><td>4</td><td>0.40</td></tr>
+                            
+                            <tr><td colspan="4"><strong>Debilidades</strong></td></tr>
+                            <tr><td>Falta de inventarios de repuestos</td><td>0.15</td><td>1</td><td>0.15</td></tr>
+                            <tr><td>Limitado presupuesto de marketing digital</td><td>0.10</td><td>2</td><td>0.20</td></tr>
+                            <tr><td>Procesos logísticos lentos</td><td>0.10</td><td>2</td><td>0.10</td></tr>
+                            <tr><td>Alta rotación de personal técnico</td><td>0.05</td><td>2</td><td>0.10</td></tr>
+                            <tr><td>Dependencia de proveedores internacionales</td><td>0.05</td><td>2</td><td>0.20</td></tr>
+                            <tr class="total-row">
+                                <td>TOTAL</td><td>1.00</td><td>-</td><td>2.85</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="alert-box">
+                        <strong>Interpretación:</strong> El resultado de 2.85 indica una posición interna fuerte. El servicio postventa y la base de clientes compensan las debilidades críticas en el inventario y logística internacional.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="competitivo" class="tab-content">
+            <div class="card">
+                <h2>Matriz de Perfil Competitivo (MPC)</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Factores Clave de Éxito</th>
+                            <th>Peso</th>
+                            <th>VoltEcuador</th>
+                            <th>Marcas Chinas</th>
+                            <th>Otras Marcas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Cuota de mercado actual</td><td>0.20</td><td>3 (0.60)</td><td>4 (0.80)</td><td>3 (0.60)</td></tr>
+                        <tr><td>Capacidad de adaptación tecnol.</td><td>0.15</td><td>4 (0.60)</td><td>4 (0.60)</td><td>2 (0.30)</td></tr>
+                        <tr><td>Fidelización de clientes</td><td>0.15</td><td>5 (0.75)</td><td>4 (0.60)</td><td>3 (0.45)</td></tr>
+                        <tr><td>Estructura de costos y precios</td><td>0.15</td><td>2 (0.30)</td><td>5 (0.75)</td><td>3 (0.45)</td></tr>
+                        <tr><td>Infraestructura y canales dist.</td><td>0.15</td><td>3 (0.45)</td><td>4 (0.60)</td><td>4 (0.60)</td></tr>
+                        <tr><td>Nivel de integración y alianzas</td><td>0.20</td><td>4 (0.80)</td><td>4 (0.80)</td><td>3 (0.60)</td></tr>
+                        <tr class="total-row">
+                            <td>TOTAL</td><td>1.00</td><td>3.50</td><td>4.15</td><td>3.00</td></tr>
+                    </tbody>
+                </table>
+                <div class="alert-box">
+                    <strong>Conclusión MPC:</strong> Aunque superamos a los competidores tradicionales gracias a la agilidad tecnológica y fidelización de clientes, las <strong>marcas chinas</strong> son líderes estratégicos porque apalancan economías de escala y liderazgo en costos. Nuestra ventaja debe ser defensiva mediante un enfoque postventa.
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Matriz GE / McKinsey (Atractivo vs Posición)</h2>
+                <div class="grid-2">
+                    <div>
+                        <h3>Atractivo del Mercado</h3>
+                        <ul>
+                            <li>Tamaño del mercado (Peso: 20 -> Valor: 80)</li>
+                            <li>Tasa de crecimiento (Peso: 15 -> Valor: 60)</li>
+                            <li>Sensibilidad al precio (Peso: 25 -> Valor: 100)</li>
+                            <li>Barreras de entrada (Peso: 15 -> Valor: 30)</li>
+                            <li>Leyes y normativas (Peso: 15 -> Valor: 75)</li>
+                            <li>Complejidad (Peso: 20 -> Valor: 60)</li>
+                        </ul>
+                        <strong>Puntuación Atractivo: 4.05 / 5.00</strong>
+                    </div>
+                    <div>
+                        <h3>Posición Competitiva</h3>
+                        <ul>
+                            <li>Cuota de mercado (Peso: 15 -> Valor: 60)</li>
+                            <li>Vulnerabilidad a nueva tecnol. (Peso: 20 -> Valor: 100)</li>
+                            <li>Economías de la empresa (Peso: 15 -> Valor: 60)</li>
+                            <li>Utilización de cap. producción (Peso: 10 -> Valor: 30)</li>
+                            <li>Habilidades tecnológicas (Peso: 20 -> Valor: 100)</li>
+                            <li>Nivel de integración (Peso: 10 -> Valor: 30)</li>
+                        </ul>
+                        <strong>Puntuación Competitiva: 4.20 / 5.00</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="peyea-gran" class="tab-content">
+            <div class="grid-2">
+                <div class="card">
+                    <h2>Matriz PEYEA</h2>
+                    <p><strong>Fuerza Financiera (FF):</strong> Promedio +3.2 (ROE, ROA, Liquidez corriente aceptable)</p>
+                    <p><strong>Ventaja Competitiva (VC):</strong> Promedio -3.0 (Alta calidad postventa, pero cuota dependiente de importación)</p>
+                    <p><strong>Estabilidad del Ambiente (EA):</strong> Promedio -4.25 (Presión competitiva alta, Riesgo país elevado)</p>
+                    <p><strong>Fuerza Industrial (FI):</strong> Promedio +4.00 (Alto respaldo de leyes de proyección de energía limpia)</p>
+                    <hr>
+                    <h3>Coordenadas del Vector:</h3>
+                    <ul>
+                        <li><strong>Eje X (FI + VC):</strong> 4.00 + (-3.0) = <strong>1.0</strong></li>
+                        <li><strong>Eje Y (FF + EA):</strong> 3.2 + (-4.25) = <strong>-1.05</strong></li>
+                    </ul>
+                    <p><strong>Perfil Estratégico:</strong> <span class="badge" style="background-color:#fdebd0; color:#e67e22;">Estrategia Competitiva</span></p>
+                </div>
+
+                <div class="card">
+                    <h2>Matriz de la Gran Estrategia</h2>
+                    <div class="alert-box" style="background-color: #e8f8f5; border-left-color: #16a085;">
+                        VoltEcuador se ubica en el <strong>Cuadrante 1</strong> (Fuerte posición competitiva en un mercado de crecimiento rápido).
+                    </div>
+                    <h3>Estrategias Prioritarias Recomendadas:</h3>
+                    <ol>
+                        <li><strong>Desarrollo del mercado:</strong> Incrementar el valor de la propuesta de servicio mediante control logístico.</li>
+                        <li><strong>Penetración de Mercado:</strong> Apalancar masivamente la base de datos de los más de 12,000 clientes activos.</li>
+                        <li><strong>Integración hacia adelante:</strong> Ganar el control directo de los canales de distribución para desplazar intermediarios.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div id="pedidosya" class="tab-content">
+            <div class="card">
+                <h2>Trabajo Grupal: Aplicación Práctica del Consumidor</h2>
+                <p><strong>Campaña Seleccionada:</strong> PedidosYa Ecuador - <i>"Tu mundo al toque"</i></p>
+                <hr>
+                
+                <h3>1. ¿Qué tipo de necesidad aborda la campaña?</h3>
+                <p>Aborda ambos enfoques de necesidades:</p>
+                <ul>
+                    <li><strong>Fisiológica/Primaria:</strong> Satisface el hambre y la sed de manera inmediata.</li>
+                    <li><strong>Psicológica/Seguridad y Estima:</strong> Brinda tranquilidad al saber exactamente cuándo llegará la comida, optimizando el tiempo y aportando estatus (comodidad y conveniencia sin esfuerzo físico).</li>
+                </ul>
+
+                <h3>2. ¿De qué manera busca reducir una tensión o incomodidad?</h3>
+                <p>PedidosYa reduce la ansiedad y la incertidumbre del tiempo de espera. Transforma una necesidad incómoda en una experiencia rápida y sencilla, atacando directamente el "Pain" del esfuerzo físico y mental ligado a la preparación o búsqueda de alimentos en el día a día.</p>
+
+                <h3>3. ¿Cómo sugiere que el producto restaura el equilibrio?</h3>
+                <p>Sugiere al usuario que no tiene que sacrificar sus actividades clave (estudio, trabajo) para satisfacer necesidades básicas. La aplicación se encarga del "trabajo pesado" para que el consumidor retorne a su estado de confort de forma inmediata.</p>
+
+                <h3>4. Mensaje publicitario clave</h3>
+                <blockquote>
+                    "Tu mundo al toque. Pide lo que quieras."
+                </blockquote>
+                <p>Este eslogan refuerza la inmediatez y la habituación del uso de la app como la solución definitiva frente al estrés diario y las complicaciones de logística personal.</p>
+            </div>
+        </div>
+
+    </div>
+
     <script>
-        // Datos por defecto basados en la planeación estratégica de VoltEcuador
-        const defaultData = {
-            efi: [
-                { id: 'f1', tipo: 'Fortaleza', factor: 'Red de talleres autorizados con soporte técnico especializado', peso: 0.20, calif: 4 },
-                { id: 'f2', tipo: 'Fortaleza', factor: 'Cartera consolidada de más de 4,000 clientes activos en el país', peso: 0.15, calif: 4 },
-                { id: 'f3', tipo: 'Fortaleza', factor: 'Sistemas de monitoreo digital para gestión de flotas', peso: 0.15, calif: 3 },
-                { id: 'd1', tipo: 'Debilidad', factor: 'Tiempos de entrega variables en repuestos de importación crítica', peso: 0.30, calif: 2 },
-                { id: 'd2', tipo: 'Debilidad', factor: 'Bajo alcance de campañas de fidelización para clientes antiguos', peso: 0.20, calif: 1 }
-            ],
-            efe: [
-                { id: 'o1', tipo: 'Oportunidad', factor: 'Políticas gubernamentales que incentivan la transición a movilidad eléctrica', peso: 0.25, calif: 4 },
-                { id: 'o2', tipo: 'Oportunidad', factor: 'Creciente demanda corporativa por reducir la huella de carbono logística', peso: 0.20, calif: 3 },
-                { id: 'a1', tipo: 'Amenaza', factor: 'Inestabilidad en las cadenas de suministro globales y aranceles', peso: 0.30, calif: 2 },
-                { id: 'a2', tipo: 'Amenaza', factor: 'Ingreso de nuevos competidores con plataformas de postventa low-cost', peso: 0.25, calif: 2 }
-            ]
-        };
-
-        let appData = JSON.parse(localStorage.getItem('voltEcuadorData')) || { ...defaultData };
-
-        // Inicialización al cargar la página
-        window.addEventListener('load', () => {
-            renderMatrices();
-            initChart();
-        });
-
-        // Cambiar entre pestañas
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
             
-            document.getElementById(`tab-${tabId}`).classList.add('active');
-            document.getElementById(`btn-${tabId}`).classList.add('active');
-            
-            // Cambiar título superior
-            const titles = { resumen: 'Resumen Ejecutivo', matrices: 'Matrices de Entrada (EFE / EFI)', kpis: 'Hitos y KPIs con Semáforo' };
-            document.getElementById('current-title').innerText = titles[tabId];
-        }
-
-        // Renderizar las tablas EFE y EFI interactivos
-        function renderMatrices() {
-            renderTable('efi', 'table-efi-body');
-            renderTable('efe', 'table-efe-body');
-            calculateTotals();
-        }
-
-        function renderTable(matrixKey, bodyId) {
-            const tbody = document.getElementById(bodyId);
-            tbody.innerHTML = '';
-
-            appData[matrixKey].forEach((item, index) => {
-                const ponderado = (item.peso * item.calif).toFixed(2);
-                const tagColor = item.tipo === 'Fortaleza' || item.tipo === 'Oportunidad' ? 'text-emerald-400 bg-emerald-500/10' : 'text-rose-400 bg-rose-500/10';
-
-                const row = document.createElement('tr');
-                row.className = "hover:bg-slate-900/40 transition-colors";
-                row.innerHTML = `
-                    <td class="py-3 px-4">
-                        <div class="flex items-center gap-2">
-                            <span class="px-1.5 py-0.5 text-[10px] uppercase font-bold rounded ${tagColor}">${item.tipo[0]}</span>
-                            <span class="text-slate-300">${item.factor}</span>
-                        </div>
-                    </td>
-                    <td class="py-3 px-4 text-center">
-                        <input type="number" step="0.01" min="0" max="1" value="${item.peso}" 
-                            onchange="updateValue('${matrixKey}', ${index}, 'peso', this.value)"
-                            class="bg-slate-800 border border-slate-700 rounded px-2 py-1 text-center w-16 font-mono text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
-                    </td>
-                    <td class="py-3 px-4 text-center">
-                        <select onchange="updateValue('${matrixKey}', ${index}, 'calif', this.value)"
-                            class="bg-slate-800 border border-slate-700 rounded px-2 py-1 text-center w-14 font-mono text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
-                            <option value="1" ${item.calif == 1 ? 'selected' : ''}>1</option>
-                            <option value="2" ${item.calif == 2 ? 'selected' : ''}>2</option>
-                            <option value="3" ${item.calif == 3 ? 'selected' : ''}>3</option>
-                            <option value="4" ${item.calif == 4 ? 'selected' : ''}>4</option>
-                        </select>
-                    </td>
-                    <td class="py-3 px-4 text-right font-mono text-slate-200">${ponderado}</td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        // Actualizar valores en memoria y LocalStorage
-        function updateValue(matrixKey, index, field, value) {
-            appData[matrixKey][index][field] = parseFloat(value);
-            localStorage.setItem('voltEcuadorData', JSON.stringify(appData));
-            renderMatrices();
-        }
-
-        // Calcular los totales e indicar el estado
-        function calculateTotals() {
-            let efiTotalPeso = 0, efiTotalScore = 0;
-            appData.efi.forEach(item => {
-                efiTotalPeso += item.peso;
-                efiTotalScore += (item.peso * item.calif);
-            });
-
-            let efeTotalPeso = 0, efeTotalScore = 0;
-            appData.efe.forEach(item => {
-                efeTotalPeso += item.peso;
-                efeTotalScore += (item.peso * item.calif);
-            });
-
-            document.getElementById('efi-total-peso').innerText = efiTotalPeso.toFixed(2);
-            document.getElementById('efi-total-score').innerText = efiTotalScore.toFixed(2);
-            document.getElementById('efe-total-peso').innerText = efeTotalPeso.toFixed(2);
-            document.getElementById('efe-total-score').innerText = efeTotalScore.toFixed(2);
-        }
-
-        // Inicializar Gráfico con Chart.js
-        function initChart() {
-            const ctx = document.getElementById('chartRendimiento').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Q1 2026', 'Q2 2026', 'Q3 (Predicción)', 'Q4 (Meta)'],
-                    datasets: [{
-                        label: 'Índice de Fidelización de Flotas',
-                        data: [79, 84, 87.5, 95],
-                        borderColor: '#10b981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } },
-                        x: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } }
-                    }
-                }
-            });
-        }
-
-        // Reiniciar aplicación a valores iniciales
-        function resetData() {
-            if(confirm('¿Seguro que deseas restaurar las configuraciones por defecto de las matrices?')) {
-                localStorage.removeItem('voltEcuadorData');
-                appData = {
-                    efi: [
-                        { id: 'f1', tipo: 'Fortaleza', factor: 'Red de talleres autorizados con soporte técnico especializado', peso: 0.20, calif: 4 },
-                        { id: 'f2', tipo: 'Fortaleza', factor: 'Cartera consolidada de más de 4,000 clientes activos en el país', peso: 0.15, calif: 4 },
-                        { id: 'f3', tipo: 'Fortaleza', factor: 'Sistemas de monitoreo digital para gestión de flotas', peso: 0.15, calif: 3 },
-                        { id: 'd1', tipo: 'Debilidad', factor: 'Tiempos de entrega variables en repuestos de importación crítica', peso: 0.30, calif: 2 },
-                        { id: 'd2', tipo: 'Debilidad', factor: 'Bajo alcance de campañas de fidelización para clientes antiguos', peso: 0.20, calif: 1 }
-                    ],
-                    efe: [
-                        { id: 'o1', tipo: 'Oportunidad', factor: 'Políticas gubernamentales que incentivan la transición a movilidad eléctrica', peso: 0.25, calif: 4 },
-                        { id: 'o2', tipo: 'Oportunidad', factor: 'Creciente demanda corporativa por reducir la huella de carbono logística', peso: 0.20, calif: 3 },
-                        { id: 'a1', tipo: 'Amenaza', factor: 'Inestabilidad en las cadenas de suministro globales y aranceles', peso: 0.30, calif: 2 },
-                        { id: 'a2', tipo: 'Amenaza', factor: 'Ingreso de nuevos competidores con plataformas de postventa low-cost', peso: 0.25, calif: 2 }
-                    ]
-                };
-                renderMatrices();
+            // Ocultar todos los contenidos de pestaña
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
             }
+
+            // Quitar la clase active de todos los botones
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+
+            // Mostrar la pestaña actual y añadir clase activa al botón
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
         }
     </script>
 </body>
