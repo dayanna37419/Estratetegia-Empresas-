@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
         /* --- ARQUITECTURA DE DISEÑO & VARIABLES DE SISTEMA --- */
@@ -45,32 +44,172 @@
             --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-main); color: var(--text-main); display: flex; min-height: 100vh; overflow-x: hidden; transition: background-color 0.3s ease; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
 
-        /* --- SIDEBAR COMPONENT --- */
-        #sidebar { width: 280px; background-color: var(--bg-sidebar); color: #ffffff; display: flex; flex-direction: column; position: fixed; top: 0; bottom: 0; left: 0; z-index: 50; transition: var(--transition); border-right: 1px solid rgba(255, 255, 255, 0.05); }
-        #sidebar.collapsed { width: 75px; }
-        #sidebar.collapsed .nav-text, #sidebar.collapsed .brand-name, #sidebar.collapsed .sidebar-footer { display: none; }
-        .brand-area { height: 70px; display: flex; align-items: center; padding: 0 24px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
-        .brand-name { font-weight: 700; font-size: 1.15rem; letter-spacing: -0.5px; color: #f8fafc; margin-left: 12px; }
-        .nav-links { list-style: none; padding: 20px 12px; overflow-y: auto; flex-grow: 1; }
-        .nav-item { display: flex; align-items: center; padding: 12px 16px; color: var(--sidebar-text); text-decoration: none; border-radius: var(--radius-md); margin-bottom: 6px; cursor: pointer; transition: var(--transition); }
-        .nav-item:hover, .nav-item.active { background-color: rgba(255, 255, 255, 0.04); color: var(--sidebar-active); }
-        .nav-item svg { width: 20px; height: 20px; flex-shrink: 0; }
-        .nav-text { margin-left: 14px; font-size: 0.92rem; font-weight: 500; }
-        .sidebar-footer { padding: 20px; border-top: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.75rem; color: var(--sidebar-text); text-align: center; }
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
 
-        /* --- APP LAYOUT CONTROLS --- */
-        #main-container { flex-grow: 1; margin-left: 280px; padding: 100px 40px 40px 40px; transition: var(--transition); min-width: 0; }
-        #main-container.expanded { margin-left: 75px; }
-        #topbar { position: fixed; top: 0; right: 0; left: 280px; height: 70px; background-color: var(--card-bg); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; z-index: 40; transition: var(--transition); box-shadow: var(--shadow-sm); }
-        #topbar.expanded { left: 75px; }
-        .topbar-left { display: flex; align-items: center; gap: 20px; flex-grow: 1; max-width: 600px; }
-        .topbar-right { display: flex; align-items: center; gap: 12px; }
+        /* --- SIDEBAR COMPONENT (ESTILO NOTION / CLICKUP) --- */
+        #sidebar {
+            width: 280px;
+            background-color: var(--bg-sidebar);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 50;
+            transition: var(--transition);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
 
-        /* --- UI COMPONENETS & BOTONES --- */
-        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: var(--radius-md); font-weight: 500; font-size: 0.85rem; cursor: pointer; border: 1px solid transparent; transition: var(--transition); user-select: none; }
+        #sidebar.collapsed {
+            width: 75px;
+        }
+
+        #sidebar.collapsed .nav-text, 
+        #sidebar.collapsed .brand-name,
+        #sidebar.collapsed .sidebar-footer {
+            display: none;
+        }
+
+        .brand-area {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .brand-name {
+            font-weight: 700;
+            font-size: 1.15rem;
+            letter-spacing: -0.5px;
+            color: #f8fafc;
+            margin-left: 12px;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 20px 12px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            margin-bottom: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.04);
+            color: var(--sidebar-active);
+        }
+
+        .nav-item svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .nav-text {
+            margin-left: 14px;
+            font-size: 0.92rem;
+            font-weight: 500;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.75rem;
+            color: var(--sidebar-text);
+            text-align: center;
+        }
+
+        /* --- APP CONTAINER LOGISTICS --- */
+        #main-container {
+            flex-grow: 1;
+            margin-left: 280px;
+            padding: 100px 40px 40px 40px;
+            transition: var(--transition);
+            min-width: 0;
+        }
+
+        #main-container.expanded {
+            margin-left: 75px;
+        }
+
+        /* --- TOPBAR / HEADER CONTROLS --- */
+        #topbar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 280px;
+            height: 70px;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            z-index: 40;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        #topbar.expanded {
+            left: 75px;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-grow: 1;
+            max-width: 600px;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* --- BOTONES PREMIUM & CONTROLES --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 16px;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: var(--transition);
+            user-select: none;
+        }
+
         .btn-primary { background-color: var(--accent-color); color: white; }
         .btn-primary:hover { background-color: var(--accent-hover); }
         .btn-secondary { background-color: transparent; border-color: var(--border-color); color: var(--text-main); }
@@ -78,77 +217,194 @@
         .btn-danger { background-color: var(--danger); color: white; }
         .btn-danger:hover { background-color: #dc2626; }
         
-        .btn-icon { padding: 10px; border-radius: var(--radius-md); border: 1px solid var(--border-color); cursor: pointer; background: var(--card-bg); display: flex; align-items: center; justify-content: center; transition: var(--transition); }
+        .btn-icon { 
+            padding: 10px; 
+            border-radius: var(--radius-md); 
+            border: 1px solid var(--border-color); 
+            cursor: pointer; 
+            background: var(--card-bg); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            transition: var(--transition);
+        }
         .btn-icon:hover { background-color: var(--bg-main); }
-        .btn-icon svg { width: 18px; height: 18px; stroke: var(--text-main); fill: none; }
+        .btn-icon svg { width: 18 height: 18; stroke: var(--text-main); fill: none; }
 
-        /* --- GRIDS & CARDS --- */
-        .dashboard-section { display: none; animation: appRenderFade 0.35s ease; }
-        .dashboard-section.active { display: block; }
-        @keyframes appRenderFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .section-header { margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
-        .section-title { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.5px; color: var(--text-main); }
-        
-        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 24px; margin-bottom: 24px; }
+        /* --- CONTENEDORES, TARJETAS Y GRID LAYOUTS --- */
+        .dashboard-section {
+            display: none;
+            animation: appRenderFade 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .dashboard-section.active {
+            display: block;
+        }
+
+        @keyframes appRenderFade {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1.65rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--text-main);
+        }
+
         .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-bottom: 24px; }
-        .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 24px; }
         
-        .card { background-color: var(--card-bg); border-radius: var(--radius-lg); border: 1px solid var(--border-color); padding: 24px; box-shadow: var(--shadow-md); position: relative; }
-        .card-header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
-        .card-title { font-size: 1.05rem; font-weight: 600; color: var(--text-main); }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: 28px;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            transition: border-color 0.2s ease;
+        }
+        .card:hover { border-color: var(--text-muted); }
 
-        /* --- MOTOR EDICIÓN & TABLAS --- */
-        [contenteditable="true"] { padding: 4px 8px; border-radius: var(--radius-md); outline: none; transition: var(--transition); }
-        [contenteditable="true"]:hover { background-color: rgba(37, 99, 235, 0.04); }
-        [contenteditable="true"]:focus { background-color: var(--card-bg); box-shadow: 0 0 0 2px var(--accent-color); }
+        .card-header-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+        }
 
-        .table-container { width: 100%; overflow-x: auto; margin-top: 12px; border: 1px solid var(--border-color); border-radius: var(--radius-md); }
-        table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
-        th { background-color: var(--bg-main); color: var(--text-muted); padding: 12px 16px; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; border-bottom: 1px solid var(--border-color); }
-        td { padding: 12px 16px; border-bottom: 1px solid var(--border-color); color: var(--text-main); }
-        
-        .table-select { border: 1px solid var(--border-color); background-color: var(--card-bg); color: var(--text-main); padding: 6px 10px; border-radius: var(--radius-md); font-size: 0.8rem; outline: none; }
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
 
-        /* --- LISTAS EDITABLES DE MATRICES --- */
+        /* --- MOTOR EDICIÓN IN-PLACE (UI/UX SANITIZADA) --- */
+        [contenteditable="true"] {
+            padding: 6px 10px;
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+            outline: none;
+            display: inline-block;
+            width: 100%;
+            word-wrap: break-word;
+        }
+
+        [contenteditable="true"]:hover {
+            background-color: rgba(37, 99, 235, 0.05);
+            box-shadow: 0 0 0 1px var(--sidebar-active);
+        }
+
+        [contenteditable="true"]:focus {
+            background-color: var(--card-bg);
+            box-shadow: 0 0 0 2px var(--accent-color);
+        }
+
+        /* --- ESTRUCTURA DE TABLAS AVANZADAS --- */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.88rem;
+        }
+
+        th {
+            background-color: var(--bg-main);
+            color: var(--text-muted);
+            padding: 14px 18px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+            vertical-align: middle;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background-color: rgba(0, 0, 0, 0.01); }
+
+        /* --- SELECTS CORPORATIVOS DENTRO DE TABLAS --- */
+        .table-select {
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            padding: 6px 10px;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            font-size: 0.8rem;
+            outline: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .table-select:focus { border-color: var(--accent-color); }
+
+        /* --- LISTAS CONFIGURABLES --- */
         .editable-list { list-style: none; }
-        .editable-list-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 4px; border-bottom: 1px solid var(--border-color); }
+        .editable-list-item { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 10px 4px; 
+            border-bottom: 1px solid var(--border-color); 
+        }
         .editable-list-item:last-child { border: none; }
-        .editable-list-item span[contenteditable="true"] { width: calc(100% - 35px); font-size: 0.88rem; }
-        .list-remove-btn { color: var(--danger); cursor: pointer; font-weight: bold; padding: 0 6px; }
+        .editable-list-item span[contenteditable="true"] { width: calc(100% - 40px); }
 
-        /* --- VISUALIZADORES KPI & SEMÁFOROS --- */
-        .badge { display: inline-block; padding: 4px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-align: center; }
-        .badge-success { background-color: rgba(16, 185, 129, 0.15); color: var(--success); }
-        .badge-warning { background-color: rgba(245, 158, 11, 0.15); color: var(--warning); }
-        .badge-danger { background-color: rgba(239, 68, 68, 0.15); color: var(--danger); }
-        
-        .progress-bar-bg { width: 100%; background-color: var(--border-color); height: 8px; border-radius: 4px; margin-top: 6px; overflow: hidden; }
-        .progress-bar-fill { height: 100%; width: 0%; transition: width 0.4s ease; }
+        .list-remove-btn {
+            color: var(--danger);
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1.2rem;
+            padding: 0 8px;
+            transition: var(--transition);
+            user-select: none;
+        }
+        .list-remove-btn:hover { transform: scale(1.15); }
 
-        /* --- CADENA DE VALOR VISUAL COMPONENT --- */
-        .vchain-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 15px; }
-        .vchain-box { background: var(--bg-main); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md); }
-        .vchain-title { font-size: 0.82rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 4px; }
+        /* --- PLACEHOLDER PARA MODULOS POSTERIORES --- */
+        .module-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-lg);
+            color: var(--text-muted);
+            text-align: center;
+            padding: 40px;
+        }
 
-        /* --- PLACEHOLDERS FASES 3 Y 4 --- */
-        .module-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 280px; border: 2px dashed var(--border-color); border-radius: var(--radius-lg); color: var(--text-muted); text-align: center; padding: 4px; }
-
-        /* ================= ANCHOR: REGLAS DE IMPRESIÓN PROFESIONAL (A4) ================= */
-        @media print {
-            body { background: #ffffff !important; color: #000000 !important; display: block !important; }
-            #sidebar, #topbar, .btn, .list-remove-btn, .section-header button { display: none !important; }
-            #main-container { margin-left: 0 !important; padding: 0 !important; width: 100% !important; }
-            .dashboard-section { display: none !important; opacity: 1 !important; }
-            
-            /* Modo Imprimir Todo vs Imprimir Sección */
-            body.print-all .dashboard-section { display: block !important; page-break-after: always !important; }
-            body:not(.print-all) .dashboard-section.active { display: block !important; }
-
-            .card { border: 1px solid #000000 !important; box-shadow: none !important; page-break-inside: avoid !important; background: #ffffff !important; margin-bottom: 20px !important; }
-            th { background-color: #f1f5f9 !important; color: #000000 !important; border-bottom: 2px solid #000000 !important; }
-            td { border-bottom: 1px solid #e2e8f0 !important; }
-            canvas { max-width: 100% !important; height: auto !important; }
+        /* --- RESPONSIVE LOGISTICS --- */
+        @media(max-width: 1024px) {
+            #sidebar { width: 75px; }
+            #main-container { margin-left: 75px; padding: 100px 20px 20px 20px; }
+            #topbar { left: 75px; padding: 0 20px; }
+            .brand-name { display: none; }
         }
     </style>
 </head>
@@ -161,58 +417,55 @@
         </div>
         <ul class="nav-links">
             <li class="nav-item active" id="nav-inicio" onclick="switchSection('inicio')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                 <span class="nav-text">Inicio y Filosofía</span>
             </li>
             <li class="nav-item" id="nav-metas-objetivos" onclick="switchSection('metas-objetivos')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
                 <span class="nav-text">Metas y Objetivos</span>
             </li>
             <li class="nav-item" id="nav-kpis" onclick="switchSection('kpis')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line><line x1="2" y1="20" x2="22" y2="20"></line></svg>
-                <span class="nav-text">Cuadro de Mando KPIs</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line><line x1="2" y1="20" x2="22" y2="20"></line></svg>
+                <span class="nav-text">Módulo KPIs (P2)</span>
             </li>
             <li class="nav-item" id="nav-foda" onclick="switchSection('foda')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l-7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
-                <span class="nav-text">FODA & FODA Cruzado</span>
-            </li>
-            <li class="nav-item" id="nav-entorno" onclick="switchSection('entorno')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                <span class="nav-text">PESTEL & Cadena Valor</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l-7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                <span class="nav-text">FODA & Entorno (P2)</span>
             </li>
             <li class="nav-item" id="nav-diagnostico" onclick="switchSection('diagnostico')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
                 <span class="nav-text">Matrices EFI/EFE (P3)</span>
             </li>
             <li class="nav-item" id="nav-cartera" onclick="switchSection('cartera')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21H3V3"></path><path d="M18 8l-4 4-4-4-4 4"></path></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 21H3V3"></path><path d="M18 8l-4 4-4-4-4 4"></path></svg>
                 <span class="nav-text">BCG & PEYEA (P3)</span>
             </li>
             <li class="nav-item" id="nav-decision" onclick="switchSection('decision')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2</polygon><polyline points="2 17 12 22 22 17"></polyline></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2</polygon><polyline points="2 17 12 22 22 17"></polyline></svg>
                 <span class="nav-text">Decisión MCPE (P4)</span>
             </li>
         </ul>
-        <div class="sidebar-footer">Enterprise Version 2026</div>
+        <div class="sidebar-footer">
+            Enterprise Version 2026
+        </div>
     </aside>
 
     <div id="main-container">
         
         <header id="topbar">
             <div class="topbar-left">
-                <button class="btn-icon" onclick="toggleSidebar()" title="Colapsar Menú">
+                <button class="btn-icon" onclick="toggleSidebar()" title="Colapsar menú">
                     <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                 </button>
-                <div id="timestamp-tracker" style="font-size: 0.82rem; color: var(--text-muted); font-weight: 500;">
-                    Sincronización Activa Local
+                <div style="font-size: 0.82rem; color: var(--text-muted); font-weight: 500;" id="timestamp-tracker">
+                    Última Sincronización Local: Detectando...
                 </div>
             </div>
             <div class="topbar-right">
-                <button class="btn-icon" onclick="toggleTheme()" title="Cambiar Color de Interfaz">
+                <button class="btn-icon" onclick="toggleTheme()" title="Alternar tema claro/oscuro">
                     <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
                 </button>
-                <button class="btn btn-primary" onclick="printCompleteDashboard()">🖨️ Imprimir Plan Completo</button>
-                <button class="btn btn-secondary" onclick="exportStateJSON()">Exportar Backup</button>
+                <button class="btn btn-secondary" onclick="exportStateJSON()" title="Descargar respaldo de los datos">Exportar Backup</button>
                 <button class="btn btn-secondary" onclick="triggerImportFile()">Importar Backup</button>
                 <button class="btn btn-danger" onclick="restoreVoltDefaults()">Restaurar Default</button>
             </div>
@@ -222,52 +475,60 @@
         <main id="section-inicio" class="dashboard-section active">
             <div class="section-header">
                 <div>
-                    <h1 class="section-title" contenteditable="true" id="txt-empresa-nombre" onblur="syncTextData('empresaNombre', this)"></h1>
-                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 4px;" contenteditable="true" id="txt-empresa-sub" onblur="syncTextData('empresaSub', this)"></p>
+                    <h1 class="section-title" contenteditable="true" id="txt-empresa-nombre" onblur="syncTextData('empresaNombre', this)">Volt Ecuador</h1>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 4px;" contenteditable="true" id="txt-empresa-sub" onblur="syncTextData('empresaSub', this)">Planificación Estratégica Institucional y Arquitectura de Negocio</p>
                 </div>
-                <button class="btn btn-secondary" onclick="printSingleSection()">🖨️ Imprimir Sección</button>
             </div>
 
             <div class="grid-3">
                 <div class="card">
-                    <div class="card-header-area"><h3 class="card-title">Misión Institucional</h3></div>
+                    <div class="card-header-area">
+                        <h3 class="card-title">Misión Institucional</h3>
+                    </div>
                     <p style="line-height: 1.6; font-size: 0.9rem;" contenteditable="true" id="txt-mision" onblur="syncTextData('mision', this)"></p>
                 </div>
                 <div class="card">
-                    <div class="card-header-area"><h3 class="card-title">Visión de Futuro</h3></div>
+                    <div class="card-header-area">
+                        <h3 class="card-title">Visión de Futuro</h3>
+                    </div>
                     <p style="line-height: 1.6; font-size: 0.9rem;" contenteditable="true" id="txt-vision" onblur="syncTextData('vision', this)"></p>
                 </div>
                 <div class="card">
                     <div class="card-header-area">
                         <h3 class="card-title">Valores Corporativos</h3>
-                        <button class="btn btn-secondary" style="padding: 2px 8px; font-size: 0.72rem;" onclick="addNewValueItem()">+ Añadir</button>
+                        <button class="btn btn-secondary" style="padding: 3px 10px; font-size: 0.75rem;" onclick="addNewValueItem()">+ Añadir</button>
                     </div>
-                    <ul class="editable-list" id="list-valores"></ul>
+                    <ul class="editable-list" id="list-valores">
+                        </ul>
                 </div>
             </div>
 
             <div class="card" style="margin-top: 24px;">
-                <div class="card-header-area"><h3 class="card-title">Resumen Ejecutivo del Plan Estratégico</h3></div>
+                <div class="card-header-area">
+                    <h3 class="card-title">Resumen Ejecutivo del Plan Estratégico</h3>
+                </div>
                 <p style="line-height: 1.7; font-size: 0.92rem;" contenteditable="true" id="txt-resumen" onblur="syncTextData('resumen', this)"></p>
             </div>
         </main>
 
         <main id="section-metas-objetivos" class="dashboard-section">
             <div class="section-header">
-                <h1 class="section-title">Despliegue de Metas SMART y Objetivos</h1>
-                <button class="btn btn-secondary" onclick="printSingleSection()">🖨️ Imprimir Sección</button>
+                <div>
+                    <h1 class="section-title">Despliegue de Metas SMART y Objetivos</h1>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Modelado cuantitativo de los vectores estratégicos de la organización.</p>
+                </div>
+                <button class="btn btn-primary" onclick="appendNewMetaRow()">+ Crear Nueva Meta SMART</button>
             </div>
 
             <div class="card">
                 <div class="card-header-area">
                     <h3 class="card-title">Metas Globales Corporativas (Estructura de Largo Plazo)</h3>
-                    <button class="btn btn-primary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="appendNewMetaRow()">+ Crear Meta SMART</button>
                 </div>
                 <div class="table-container">
                     <table id="table-smart-metas">
                         <thead>
                             <tr>
-                                <th style="width: 18%;">Meta Corporativa</th>
+                                <th style="width: 20%;">Meta Corporativa</th>
                                 <th>[S] Específica</th>
                                 <th>[M] Medible</th>
                                 <th>[A] Alcanzable</th>
@@ -277,13 +538,14 @@
                                 <th style="width: 8%;">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody></tbody>
+                        <tbody>
+                            </tbody>
                     </table>
                 </div>
             </div>
 
             <div class="card" style="margin-top: 30px;">
-                <div class="card-header-area">
+                <div class="section-header" style="margin-bottom: 0; padding-bottom: 0;">
                     <h3 class="card-title">Objetivos Estratégicos y Asignación de Responsabilidades</h3>
                     <button class="btn btn-primary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="appendNewObjetivoRow()">+ Vincular Objetivo</button>
                 </div>
@@ -292,174 +554,55 @@
                         <thead>
                             <tr>
                                 <th style="width: 30%;">Objetivo Operativo</th>
-                                <th style="width: 20%;">Líder de Área</th>
-                                <th style="width: 20%;">KPI de Control</th>
+                                <th style="width: 20%;">Líder de Proyecto / Área</th>
+                                <th style="width: 20%;">KPI de Control Vinculado</th>
                                 <th style="width: 10%;">Plazo</th>
-                                <th style="width: 12%;">Estado</th>
+                                <th style="width: 12%;">Estado Operativo</th>
                                 <th style="width: 8%;">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody></tbody>
+                        <tbody>
+                            </tbody>
                     </table>
                 </div>
             </div>
         </main>
 
         <main id="section-kpis" class="dashboard-section">
-            <div class="section-header">
-                <h1 class="section-title">KPIs - Indicadores Dinámicos de Gestión</h1>
-                <button class="btn btn-secondary" onclick="printSingleSection()">🖨️ Imprimir Sección</button>
-            </div>
-
-            <div class="grid-4" id="kpi-cards-wrapper">
-                </div>
-
-            <div class="grid-2" style="margin-top: 24px;">
-                <div class="card">
-                    <div class="card-header-area">
-                        <h3 class="card-title">Rendimiento Operativo y Financiero</h3>
-                    </div>
-                    <canvas id="chart-kpis-radar" style="max-height: 320px;"></canvas>
-                </div>
-                <div class="card">
-                    <div class="card-header-area">
-                        <h3 class="card-title">Tabla Maestra de Métricas KPI</h3>
-                        <button class="btn btn-primary" style="padding: 4px 10px; font-size: 0.78rem;" onclick="appendNewKpiRow()">+ Nueva Métrica</button>
-                    </div>
-                    <div class="table-container">
-                        <table id="table-master-kpis">
-                            <thead>
-                                <tr>
-                                    <th>Indicador</th>
-                                    <th style="width: 15%;">Meta</th>
-                                    <th style="width: 15%;">Actual</th>
-                                    <th style="width: 15%;">Unidad</th>
-                                    <th style="width: 10%;">Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
+            <div class="module-placeholder">
+                <h2>Módulo KPIs e Indicadores de Gestión</h2>
+                <p style="margin-top: 10px;">Reservado para la **Parte 2**. Aquí implementaremos las tarjetas dinámicas interconectadas y los gráficos analíticos de Chart.js.</p>
             </div>
         </main>
-
         <main id="section-foda" class="dashboard-section">
-            <div class="section-header">
-                <h1 class="section-title">Análisis de Diagnóstico FODA Corporativo</h1>
-                <button class="btn btn-secondary" onclick="printSingleSection()">🖨️ Imprimir Sección</button>
-            </div>
-
-            <div class="grid-4">
-                <div class="card" style="border-left: 4px solid var(--success);">
-                    <div class="card-header-area"><h3 class="card-title">Fortalezas (F)</h3><button class="btn btn-secondary" style="padding:2px 6px; font-size:0.7rem;" onclick="addSwotElement('fortalezas')">+</button></div>
-                    <ul class="editable-list" id="swot-fortalezas"></ul>
-                </div>
-                <div class="card" style="border-left: 4px solid var(--warning);">
-                    <div class="card-header-area"><h3 class="card-title">Debilidades (D)</h3><button class="btn btn-secondary" style="padding:2px 6px; font-size:0.7rem;" onclick="addSwotElement('debilidades')">+</button></div>
-                    <ul class="editable-list" id="swot-debilidades"></ul>
-                </div>
-                <div class="card" style="border-left: 4px solid var(--accent-color);">
-                    <div class="card-header-area"><h3 class="card-title">Oportunidades (O)</h3><button class="btn btn-secondary" style="padding:2px 6px; font-size:0.7rem;" onclick="addSwotElement('oportunidades')">+</button></div>
-                    <ul class="editable-list" id="swot-oportunidades"></ul>
-                </div>
-                <div class="card" style="border-left: 4px solid var(--danger);">
-                    <div class="card-header-area"><h3 class="card-title">Amenazas (A)</h3><button class="btn btn-secondary" style="padding:2px 6px; font-size:0.7rem;" onclick="addSwotElement('amenazas')">+</button></div>
-                    <ul class="editable-list" id="swot-amenazas"></ul>
-                </div>
-            </div>
-
-            <div class="card" style="margin-top: 30px;">
-                <div class="card-header-area">
-                    <h3 class="card-title">Matriz de Impacto y Estrategias Cruzadas</h3>
-                    <button class="btn btn-primary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="generateSwotCrossStrategies()">⚡ Re-Generar Estrategias de Cruce</button>
-                </div>
-                <div class="grid-2" style="margin-top: 15px;">
-                    <div class="card" style="background: rgba(16, 185, 129, 0.02);">
-                        <h4 style="color: var(--success); font-weight:600; margin-bottom:10px;">Estrategias FO (Ofensivas - Maximizar F y O)</h4>
-                        <ul class="editable-list" id="cross-strategies-fo"></ul>
-                    </div>
-                    <div class="card" style="background: rgba(245, 158, 11, 0.02);">
-                        <h4 style="color: var(--warning); font-weight:600; margin-bottom:10px;">Estrategias DO (Adaptativas - Superar D usando O)</h4>
-                        <ul class="editable-list" id="cross-strategies-do"></ul>
-                    </div>
-                    <div class="card" style="background: rgba(37, 99, 235, 0.02);">
-                        <h4 style="color: var(--accent-color); font-weight:600; margin-bottom:10px;">Estrategias FA (Defensivas - Usar F ante A)</h4>
-                        <ul class="editable-list" id="cross-strategies-fa"></ul>
-                    </div>
-                    <div class="card" style="background: rgba(239, 68, 68, 0.02);">
-                        <h4 style="color: var(--danger); font-weight:600; margin-bottom:10px;">Estrategias DA (Supervivencia - Minimizar D y A)</h4>
-                        <ul class="editable-list" id="cross-strategies-da"></ul>
-                    </div>
-                </div>
+            <div class="module-placeholder">
+                <h2>Diagnósticos FODA, FODA Cruzado, PESTEL y Porter</h2>
+                <p style="margin-top: 10px;">Reservado para la **Parte 2**. Contenedores interactivos cruzados de análisis de macroentorno.</p>
             </div>
         </main>
-
-        <main id="section-entorno" class="dashboard-section">
-            <div class="section-header">
-                <h1 class="section-title">Análisis de Macrogen entorno PESTEL y Cadena de Valor</h1>
-                <button class="btn btn-secondary" onclick="printSingleSection()">🖨️ Imprimir Sección</button>
-            </div>
-
-            <div class="card">
-                <div class="card-header-area"><h3 class="card-title">Matriz PESTEL Completa</h3></div>
-                <div class="grid-3" id="pestel-cards-container">
-                    </div>
-            </div>
-
-            <div class="card" style="margin-top: 30px;">
-                <div class="card-header-area">
-                    <h3 class="card-title">Cadena de Valor de Porter Industrial</h3>
-                </div>
-                <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 12px;">Haz clic en cualquier pilar para editar las actividades clave e infraestructura organizativa.</p>
-                <div class="vchain-grid">
-                    <div class="vchain-box">
-                        <div class="vchain-title">Logística Interna</div>
-                        <p id="vchain-li" contenteditable="true" onblur="syncTextData('vchainLi', this)"></p>
-                    </div>
-                    <div class="vchain-box">
-                        <div class="vchain-title">Operaciones</div>
-                        <p id="vchain-op" contenteditable="true" onblur="syncTextData('vchainOp', this)"></p>
-                    </div>
-                    <div class="vchain-box">
-                        <div class="vchain-title">Logística Externa</div>
-                        <p id="vchain-le" contenteditable="true" onblur="syncTextData('vchainLe', this)"></p>
-                    </div>
-                    <div class="vchain-box">
-                        <div class="vchain-title">Marketing y Ventas</div>
-                        <p id="vchain-mv" contenteditable="true" onblur="syncTextData('vchainMv', this)"></p>
-                    </div>
-                    <div class="vchain-box">
-                        <div class="vchain-title">Servicio Postventa</div>
-                        <p id="vchain-sv" contenteditable="true" onblur="syncTextData('vchainSv', this)"></p>
-                    </div>
-                </div>
-            </div>
-        </main>
-
         <main id="section-diagnostico" class="dashboard-section">
             <div class="module-placeholder">
                 <h2>Matrices de Auditoría EFI y EFE</h2>
-                <p>Reservado para la **Parte 3**. Tablas analíticas con cálculo automático de peso ponderado de mercado.</p>
+                <p style="margin-top: 10px;">Reservado para la **Parte 3**. Tablas analíticas con cálculo automático de peso ponderado de mercado.</p>
             </div>
         </main>
         <main id="section-cartera" class="dashboard-section">
             <div class="module-placeholder">
                 <h2>Análisis de Matrices de Cartera BCG & Vectores PEYEA</h2>
-                <p>Reservado para la **Parte 3**. Componente Canvas interactivo para trazado vectorial en tiempo real.</p>
+                <p style="margin-top: 10px;">Reservado para la **Parte 3**. Componente Canvas interactivo para trazado vectorial en tiempo real.</p>
             </div>
         </main>
         <main id="section-decision" class="dashboard-section">
             <div class="module-placeholder">
                 <h2>Módulo de Decisión Estratégica MCPE Final</h2>
-                <p>Reservado para la **Parte 4**. Formulación de matrices cuantitativas de planeación y motores de exportación documental.</p>
+                <p style="margin-top: 10px;">Reservado para la **Parte 4**. Formulación de matrices cuantitativas de planeación y motores de exportación documental.</p>
             </div>
         </main>
 
     </div>
 
     <script>
-        // --- DATASET INTEGRADO DE PRODUCCIÓN (CON EXTENSIÓN PARA PARTE 2) ---
+        // --- DATASET BASE DE PRODUCCIÓN DE VOLT ECUADOR ---
         const VOLT_CORE_DEFAULTS = {
             empresaNombre: "Volt Ecuador",
             empresaSub: "Planificación Estratégica Institucional y Arquitectura de Negocio",
@@ -470,47 +613,21 @@
                 "Omnipresencia de marca en el canal tradicional (tiendas de barrio)",
                 "Democratización del acceso a bebidas energéticas de calidad"
             ],
-            resumen: "Volt Ecuador opera bajo una estrategia disruptiva de liderazgo en costos. Orientada inicialmente a un target demográfico de alta exigencia física (conductores, obreros, estudiantes), la organización busca consolidar su cadena de suministro y migrar ordenadamente hacia nichos de valor añadido para mitigar riesgos de regulaciones e impuestos.",
+            resumen: "Volt Ecuador opera bajo una estrategia disruptiva de liderazgo en costos. Orientada inicialmente a un target demográfico de alta exigencia física (conductores, obreros, estudiantes), la organización busca consolidar su cadena de suministro y migrar ordenadamente hacia nichos de valor añadido para mitigar riesgos regulatorios e impositivos sobre bebidas azucaradas.",
             metas: [
-                { id: 1, m: "Incrementar cuota de mercado país", s: "Alcanzar el 55% de participación", mble: "Auditoría de volumen Kantar", a: "Factible mediante distribución capilar masiva", r: "Sostener el liderazgo ante marcas transnacionales", t: "Diciembre 2027", est: "En Progreso" },
+                { id: 1, m: "Incrementar cuota de mercado país", s: "Alcanzar el 55% de participación", mble: "Auditoría de volumen Ipsos/Kantar", a: "Factible mediante distribución capilar masiva", r: "Sostener el liderazgo ante marcas transnacionales", t: "Diciembre 2027", est: "En Progreso" },
                 { id: 2, m: "Optimizar costo unitario de empaque", s: "Reducir peso de resina PET en preformas", mble: "Ahorro medido en centavos por botella (-12%)", a: "Validado por ingeniería con nuevas sopladoras", r: "Defender el margen bruto comercial", t: "Junio 2027", est: "Completado" }
             ],
             objetivos: [
                 { id: 1, o: "Implementar 500 islas de visibilidad POP en distribuidoras clave", r: "Gerencia de Trade Marketing", kpi: "Número de puntos de venta auditados con material", p: "6 Meses", est: "En Progreso" },
                 { id: 2, o: "Validación de fórmula sin calorías con sabor arándanos ante ARCSA", r: "Dirección de I+D y Asuntos Regulatorios", kpi: "Registro sanitario emitido sin observaciones", p: "12 Meses", est: "Planificado" }
-            ],
-            // Nuevas estructuras FASE 2
-            kpis: [
-                { nombre: "Eficacia de Distribución Numérica", meta: 95, actual: 89, unidad: "%" },
-                { nombre: "Margen de Contribución Bruto", meta: 42, actual: 44, unidad: "%" },
-                { nombre: "Costo de Adquisición de Cliente (CAC)", meta: 0.15, actual: 0.18, unidad: "USD" }
-            ],
-            swot: {
-                fortalezas: ["Estructura de costos ultrabaja gracias a sinergias de grupo", "Distribución intensiva en canal tradicional (Mom & Pops)"],
-                debididades: ["Dependencia de un portafolio concentrado en bebidas azucaradas", "Bajo 'Brand Equity' en sectores socioeconómicos altos"],
-                oportunidades: ["Migración a segmentos saludables e hidratantes", "Expansión de exportaciones a mercados andinos colindantes"],
-                amenazas: ["Incrementos impositivos fiscales a nivel país sobre azúcares", "Guerra de precios agresiva de marcas alternativas locales"]
-            },
-            crossStrategies: { fo: [], do: [], fa: [], da: [] },
-            pestel: {
-                politico: "Regulaciones de etiquetado nutricional (Semáforo de salud de Ecuador).",
-                economico: "Inflación de materias primas e insumos importados.",
-                social: "Tendencia del consumidor hacia bebidas de menor contenido calórico.",
-                tecnologico: "Automatización de líneas de envasado de alta velocidad.",
-                ecologico: "Normativas de reciclaje de envases plásticos PET post-consumo.",
-                legal: "Leyes laborales de operación de plantas industriales continuas."
-            },
-            vchainLi: "Gestión automatizada de inventario de azúcar y cafeína con SAP.",
-            vchainOp: "Soplado y llenado continuo a alta velocidad en plantas certificadas.",
-            vchainLe: "Flota logística capilar subcontratada con cobertura nacional.",
-            vchainMv: "Estrategia de precios agresivos bajo el concepto de 'energía justa'.",
-            vchainSv: "Soporte de cambio de producto inmediato al canal de tenderos."
+            ]
         };
 
+        // Estado operacional en memoria hibridada
         let appState = {};
-        let globalRadarChart = null;
 
-        // --- APERTURA DE APLICACIÓN & BOOTSTRAP ---
+        // --- SISTEMA ARRANQUE (BOOTSTRAPPER) ---
         window.addEventListener('DOMContentLoaded', () => {
             initializeApplicationState();
         });
@@ -527,37 +644,29 @@
                 appState = JSON.parse(JSON.stringify(VOLT_CORE_DEFAULTS));
             }
             renderApplicationDOM();
-            rebuildRadarMetricsChart();
             updateSyncTimestamp();
         }
 
-        // --- SISTEMA MASTER DE RENDERS ---
+        // --- ENGINES DE RENDERS COMPONENTIZADOS ---
         function renderApplicationDOM() {
-            // Mapeos de la Parte 1
+            // Mapeo e Inyección de Cajas de Texto Simples
             document.getElementById('txt-empresa-nombre').innerText = appState.empresaNombre || "";
             document.getElementById('txt-empresa-sub').innerText = appState.empresaSub || "";
             document.getElementById('txt-mision').innerText = appState.mision || "";
             document.getElementById('txt-vision').innerText = appState.vision || "";
             document.getElementById('txt-resumen').innerText = appState.resumen || "";
+
+            // Renderizado de Listas
             renderValoresList();
+
+            // Renderizado de Tablas Estructurales
             renderMetasTable();
             renderObjetivosTable();
-
-            // Mapeos de la Parte 2 (KPIs y Entorno)
-            renderKpiCardsAndTable();
-            renderSwotLists();
-            renderPestelCards();
-
-            document.getElementById('vchain-li').innerText = appState.vchainLi || "";
-            document.getElementById('vchain-op').innerText = appState.vchainOp || "";
-            document.getElementById('vchain-le').innerText = appState.vchainLe || "";
-            document.getElementById('vchain-mv').innerText = appState.vchainMv || "";
-            document.getElementById('vchain-sv').innerText = appState.vchainSv || "";
         }
 
         function updateSyncTimestamp() {
             const d = new Date();
-            document.getElementById('timestamp-tracker').innerText = `Sincronización Local Activa: ${d.toLocaleTimeString()}`;
+            document.getElementById('timestamp-tracker').innerText = `Última Sincronización Local: ${d.toLocaleTimeString()} (${d.toLocaleDateString()})`;
         }
 
         function commitStateToStorage() {
@@ -565,7 +674,7 @@
             updateSyncTimestamp();
         }
 
-        // --- COMPONENTES GLOBALES NAVEGACIÓN UI ---
+        // --- CONTROL UI LOGISTICS ---
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('collapsed');
             document.getElementById('main-container').classList.toggle('expanded');
@@ -574,258 +683,205 @@
 
         function toggleTheme() {
             const html = document.documentElement;
-            html.setAttribute('data-theme', html.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+            const current = html.getAttribute('data-theme');
+            html.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
         }
 
         function switchSection(sectionId) {
             document.querySelectorAll('.dashboard-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
             document.getElementById(`section-${sectionId}`).classList.add('active');
             document.getElementById(`nav-${sectionId}`).classList.add('active');
         }
 
+        // --- EDICIÓN SÍNCRONA DE TEXTO IN-PLACE ---
         function syncTextData(key, element) {
+            // Sanitización básica para evitar inyecciones de saltos de línea rotos
             appState[key] = element.innerText.trim();
             commitStateToStorage();
         }
 
-        // --- CONTROLADORES PARTE 1 ---
+        // --- LOGICA MÓDULO VALORES CORPORATIVOS ---
         function renderValoresList() {
-            const c = document.getElementById('list-valores'); c.innerHTML = "";
-            appState.valores.forEach((v, i) => {
-                c.innerHTML += `<li class="editable-list-item"><span contenteditable="true" onblur="appState.valores[${i}]=this.innerText.trim(); commitStateToStorage();">${v}</span><span class="list-remove-btn" onclick="appState.valores.splice(${i},1); renderValoresList(); commitStateToStorage();">&times;</span></li>`;
+            const container = document.getElementById('list-valores');
+            container.innerHTML = "";
+            appState.valores.forEach((val, idx) => {
+                const li = document.createElement('li');
+                li.className = 'editable-list-item';
+                li.innerHTML = `
+                    <span contenteditable="true" onblur="syncValueItem(${idx}, this)">${val}</span>
+                    <span class="list-remove-btn" onclick="deleteValueItem(${idx})" title="Eliminar valor">&times;</span>
+                `;
+                container.appendChild(li);
             });
         }
-        function addNewValueItem() { appState.valores.push("Nuevo principio directivo estratégico."); renderValoresList(); commitStateToStorage(); }
 
+        function syncValueItem(index, element) {
+            appState.valores[index] = element.innerText.trim();
+            commitStateToStorage();
+        }
+
+        function addNewValueItem() {
+            appState.valores.push("Nuevo principio o pilar estratégico corporativo.");
+            renderValoresList();
+            commitStateToStorage();
+        }
+
+        function deleteValueItem(index) {
+            appState.valores.splice(index, 1);
+            renderValoresList();
+            commitStateToStorage();
+        }
+
+        // --- LOGICA MÓDULO TABLA METAS SMART ---
         function renderMetasTable() {
-            const tbody = document.querySelector('#table-smart-metas tbody'); tbody.innerHTML = "";
-            appState.metas.forEach((m, idx) => {
+            const tbody = document.querySelector('#table-smart-metas tbody');
+            tbody.innerHTML = "";
+            appState.metas.forEach((meta, idx) => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td contenteditable="true" onblur="appState.metas[${idx}].m=this.innerText.trim(); commitStateToStorage();">${m.m}</td>
-                    <td contenteditable="true" onblur="appState.metas[${idx}].s=this.innerText.trim(); commitStateToStorage();">${m.s}</td>
-                    <td contenteditable="true" onblur="appState.metas[${idx}].mble=this.innerText.trim(); commitStateToStorage();">${m.mble}</td>
-                    <td contenteditable="true" onblur="appState.metas[${idx}].a=this.innerText.trim(); commitStateToStorage();">${m.a}</td>
-                    <td contenteditable="true" onblur="appState.metas[${idx}].r=this.innerText.trim(); commitStateToStorage();">${m.r}</td>
-                    <td contenteditable="true" onblur="appState.metas[${idx}].t=this.innerText.trim(); commitStateToStorage();">${m.t}</td>
+                    <td contenteditable="true" onblur="syncMetaField(${idx}, 'm', this)">${meta.m}</td>
+                    <td contenteditable="true" onblur="syncMetaField(${idx}, 's', this)">${meta.s}</td>
+                    <td contenteditable="true" onblur="syncMetaField(${idx}, 'mble', this)">${meta.mble}</td>
+                    <td contenteditable="true" onblur="syncMetaField(${idx}, 'a', this)">${meta.a}</td>
+                    <td contenteditable="true" onblur="syncMetaField(${idx}, 'r', this)">${meta.r}</td>
+                    <td contenteditable="true" onblur="syncMetaField(${idx}, 't', this)">${meta.t}</td>
                     <td>
-                        <select class="table-select" onchange="appState.metas[${idx}].est=this.value; commitStateToStorage();">
-                            <option value="Planificado" ${m.est==='Planificado'?'selected':''}>Planificado</option>
-                            <option value="En Progreso" ${m.est==='En Progreso'?'selected':''}>En Progreso</option>
-                            <option value="Completado" ${m.est==='Completado'?'selected':''}>Completado</option>
+                        <select class="table-select" onchange="syncMetaField(${idx}, 'est', this)">
+                            <option value="Planificado" ${meta.est === 'Planificado' ? 'selected' : ''}>Planificado</option>
+                            <option value="En Progreso" ${meta.est === 'En Progreso' ? 'selected' : ''}>En Progreso</option>
+                            <option value="Completado" ${meta.est === 'Completado' ? 'selected' : ''}>Completado</option>
+                            <option value="Riesgo" ${meta.est === 'Riesgo' ? 'selected' : ''}>Riesgo</option>
                         </select>
                     </td>
-                    <td><button class="btn btn-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="appState.metas.splice(${idx},1); renderMetasTable(); commitStateToStorage();">Eliminar</button></td>
+                    <td>
+                        <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.75rem;" onclick="deleteMetaRow(${idx})">Remover</button>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
-        function appendNewMetaRow() { appState.metas.push({m:"Meta",s:"S",mble:"M",a:"A",r:"R",t:"Plazo",est:"Planificado"}); renderMetasTable(); commitStateToStorage(); }
 
+        function syncMetaField(index, field, element) {
+            appState.metas[index][field] = element.value !== undefined ? element.value : element.innerText.trim();
+            commitStateToStorage();
+        }
+
+        function appendNewMetaRow() {
+            appState.metas.push({
+                id: Date.now(),
+                m: "Definición de Meta Global",
+                s: "Especificación concreta",
+                mble: "Métrica asociada",
+                a: "Justificación de viabilidad",
+                r: "Alineación de valor",
+                t: "Plazo estimado",
+                est: "Planificado"
+            });
+            renderMetasTable();
+            commitStateToStorage();
+        }
+
+        function deleteMetaRow(index) {
+            appState.metas.splice(index, 1);
+            renderMetasTable();
+            commitStateToStorage();
+        }
+
+        // --- LOGICA MÓDULO TABLA OBJETIVOS ESTRATÉGICOS ---
         function renderObjetivosTable() {
-            const tbody = document.querySelector('#table-objetivos-operativos tbody'); tbody.innerHTML = "";
-            appState.objetivos.forEach((o, idx) => {
+            const tbody = document.querySelector('#table-objetivos-operativos tbody');
+            tbody.innerHTML = "";
+            appState.objetivos.forEach((obj, idx) => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td contenteditable="true" onblur="appState.objetivos[${idx}].o=this.innerText.trim(); commitStateToStorage();">${o.o}</td>
-                    <td contenteditable="true" onblur="appState.objetivos[${idx}].r=this.innerText.trim(); commitStateToStorage();">${o.r}</td>
-                    <td contenteditable="true" onblur="appState.objetivos[${idx}].kpi=this.innerText.trim(); commitStateToStorage();">${o.kpi}</td>
-                    <td contenteditable="true" onblur="appState.objetivos[${idx}].p=this.innerText.trim(); commitStateToStorage();">${o.p}</td>
+                    <td contenteditable="true" onblur="syncObjetivoField(${idx}, 'o', this)">${obj.o}</td>
+                    <td contenteditable="true" onblur="syncObjetivoField(${idx}, 'r', this)">${obj.r}</td>
+                    <td contenteditable="true" onblur="syncObjetivoField(${idx}, 'kpi', this)">${obj.kpi}</td>
+                    <td contenteditable="true" onblur="syncObjetivoField(${idx}, 'p', this)">${obj.p}</td>
                     <td>
-                        <select class="table-select" onchange="appState.objetivos[${idx}].est=this.value; commitStateToStorage();">
-                            <option value="Planificado" ${o.est==='Planificado'?'selected':''}>Planificado</option>
-                            <option value="En Progreso" ${o.est==='En Progreso'?'selected':''}>En Progreso</option>
+                        <select class="table-select" onchange="syncObjetivoField(${idx}, 'est', this)">
+                            <option value="Planificado" ${obj.est === 'Planificado' ? 'selected' : ''}>Planificado</option>
+                            <option value="En Progreso" ${obj.est === 'En Progreso' ? 'selected' : ''}>En Progreso</option>
+                            <option value="Detenido" ${obj.est === 'Detenido' ? 'selected' : ''}>Detenido</option>
                         </select>
                     </td>
-                    <td><button class="btn btn-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="appState.objetivos.splice(${idx},1); renderObjetivosTable(); commitStateToStorage();">Eliminar</button></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-        function appendNewObjetivoRow() { appState.objetivos.push({o:"Objetivo",r:"Área",kpi:"KPI",p:"Plazo",est:"Planificado"}); renderObjetivosTable(); commitStateToStorage(); }
-
-
-        // ================= ENGINE PARTE 2: KPIs & MANDO ANALÍTICO =================
-        function renderKpiCardsAndTable() {
-            const cardsWrapper = document.getElementById('kpi-cards-wrapper'); cardsWrapper.innerHTML = "";
-            const tbody = document.querySelector('#table-master-kpis tbody'); tbody.innerHTML = "";
-
-            appState.kpis.forEach((k, i) => {
-                // Lógica de Semáforo Analítico
-                const performanceRatio = (k.actual / k.meta) * 100;
-                let statusBadge = "badge-success";
-                let fillBarColor = "var(--success)";
-                
-                if (performanceRatio < 85) { statusBadge = "badge-danger"; fillBarColor = "var(--danger)"; }
-                else if (performanceRatio < 100) { statusBadge = "badge-warning"; fillBarColor = "var(--warning)"; }
-
-                // Inyectar Tarjeta UI Estilo Monday
-                cardsWrapper.innerHTML += `
-                    <div class="card">
-                        <div style="font-size:0.8rem; text-transform:uppercase; color:var(--text-muted); font-weight:600;">Métrica de Control</div>
-                        <h4 style="margin:6px 0; font-size:1.1rem; font-weight:600;">${k.nombre}</h4>
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
-                            <span style="font-size:1.4rem; font-weight:700;">${k.actual}${k.unidad}</span>
-                            <span class="badge ${statusBadge}">Meta: ${k.meta}${k.unidad}</span>
-                        </div>
-                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${Math.min(performanceRatio, 100)}%; background-color:${fillBarColor};"></div></div>
-                    </div>
-                `;
-
-                // Inyectar fila a la Tabla Operativa
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td contenteditable="true" onblur="appState.kpis[${i}].nombre=this.innerText.trim(); commitStateToStorage(); renderKpiCardsAndTable(); rebuildRadarMetricsChart();">${k.nombre}</td>
-                    <td contenteditable="true" onblur="appState.kpis[${i}].meta=parseFloat(this.innerText)||0; commitStateToStorage(); renderKpiCardsAndTable(); rebuildRadarMetricsChart();">${k.meta}</td>
-                    <td contenteditable="true" onblur="appState.kpis[${i}].actual=parseFloat(this.innerText)||0; commitStateToStorage(); renderKpiCardsAndTable(); rebuildRadarMetricsChart();">${k.actual}</td>
-                    <td contenteditable="true" onblur="appState.kpis[${i}].unidad=this.innerText.trim(); commitStateToStorage(); renderKpiCardsAndTable(); rebuildRadarMetricsChart();">${k.unidad}</td>
-                    <td><button class="btn btn-danger" style="padding:2px 6px; font-size:0.75rem;" onclick="appState.kpis.splice(${i},1); commitStateToStorage(); renderKpiCardsAndTable(); rebuildRadarMetricsChart();">X</button></td>
+                    <td>
+                        <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.75rem;" onclick="deleteObjetivoRow(${idx})">Remover</button>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function appendNewKpiRow() {
-            appState.kpis.push({ nombre: "Nuevo Indicador Corporativo", meta: 100, actual: 75, unidad: "%" });
-            commitStateToStorage(); renderKpiCardsAndTable(); rebuildRadarMetricsChart();
+        function syncObjetivoField(index, field, element) {
+            appState.objetivos[index][field] = element.value !== undefined ? element.value : element.innerText.trim();
+            commitStateToStorage();
         }
 
-        function rebuildRadarMetricsChart() {
-            const ctx = document.getElementById('chart-kpis-radar');
-            if (!ctx) return;
-            
-            const labels = appState.kpis.map(k => k.nombre);
-            const targets = appState.kpis.map(k => k.meta);
-            const currents = appState.kpis.map(k => k.actual);
-
-            if(globalRadarChart) { globalRadarChart.destroy(); }
-
-            globalRadarChart = new Chart(ctx, {
-                type: 'radar',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        { label: 'Meta Planeada', data: targets, borderColor: 'rgba(148, 163, 184, 0.6)', backgroundColor: 'transparent', borderDash: [5,5] },
-                        { label: 'Desempeño Real', data: currents, borderColor: '#2563eb', backgroundColor: 'rgba(37, 99, 235, 0.15)', fill: true }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom' } },
-                    scales: { r: { ticks: { display: false } } }
-                }
+        function appendNewObjetivoRow() {
+            appState.objetivos.push({
+                id: Date.now(),
+                o: "Redactar nuevo vector de objetivo operativo",
+                r: "Líder asignado",
+                kpi: "Indicador base",
+                p: "Horizonte",
+                est: "Planificado"
             });
+            renderObjetivosTable();
+            commitStateToStorage();
         }
 
-        // --- CONTROLADORES ANÁLISIS FODA & IMPACTO CRUZADO ---
-        function renderSwotLists() {
-            const types = ['fortalezas', 'debididades', 'oportunidades', 'amenazas'];
-            types.forEach(t => {
-                const c = document.getElementById(`swot-${t}`); c.innerHTML = "";
-                appState.swot[t].forEach((item, idx) => {
-                    c.innerHTML += `
-                        <li class="editable-list-item">
-                            <span contenteditable="true" onblur="appState.swot['${t}'][${idx}]=this.innerText.trim(); commitStateToStorage();">${item}</span>
-                            <span class="list-remove-btn" onclick="appState.swot['${t}'].splice(${idx},1); renderSwotLists(); commitStateToStorage();">&times;</span>
-                        </li>
-                    `;
-                });
-            });
-
-            // Pintar matrices cruzadas guardadas
-            const blocks = ['fo', 'do', 'fa', 'da'];
-            blocks.forEach(b => {
-                const el = document.getElementById(`cross-strategies-${b}`); el.innerHTML = "";
-                if(appState.crossStrategies[b].length === 0) {
-                    el.innerHTML = `<span style="font-size:0.8rem; color:var(--text-muted);">Sin estrategias registradas. Presiona el botón superior para calcular cruces por defecto.</span>`;
-                }
-                appState.crossStrategies[b].forEach((strat, idx) => {
-                    el.innerHTML += `
-                        <li class="editable-list-item">
-                            <span contenteditable="true" onblur="appState.crossStrategies['${b}'][${idx}]=this.innerText.trim(); commitStateToStorage();">${strat}</span>
-                            <span class="list-remove-btn" onclick="appState.crossStrategies['${b}'].splice(${idx},1); renderSwotLists(); commitStateToStorage();">&times;</span>
-                        </li>
-                    `;
-                });
-            });
+        function deleteObjetivoRow(index) {
+            appState.objetivos.splice(index, 1);
+            renderObjetivosTable();
+            commitStateToStorage();
         }
 
-        function addSwotElement(type) {
-            appState.swot[type].push("Nueva variable de análisis situacional.");
-            renderSwotLists(); commitStateToStorage();
-        }
-
-        function generateSwotCrossStrategies() {
-            // Algoritmo determinista básico para simular automatización estratégica corporativa
-            appState.crossStrategies.fo = [
-                `Utilizar la estructura de costos ultrabaja para acelerar el desarrollo del mercado hacia ${appState.swot.oportunidades[0] || 'nuevos nichos'}.`
-            ];
-            appState.crossStrategies.do = [
-                `Mitigar el impacto de la concentración del portafolio apalancándose en la migración ordenada hacia productos más saludables.`
-            ];
-            appState.crossStrategies.fa = [
-                `Defender la cuota de mercado en canales tradicionales usando los márgenes brutos para neutralizar la guerra de precios competitiva.`
-            ];
-            appState.crossStrategies.da = [
-                `Diversificar formulaciones e ingredientes industriales para evitar el impacto directo de las reformas regulatorias de salud.`
-            ];
-            renderSwotLists(); commitStateToStorage();
-        }
-
-        // --- ENTORNO MACROECONÓMICO PESTEL ---
-        function renderPestelCards() {
-            const container = document.getElementById('pestel-cards-container'); container.innerHTML = "";
-            const pillars = [
-                { key: 'politico', title: 'Político' }, { key: 'economico', title: 'Económico' },
-                { key: 'social', title: 'Social' }, { key: 'tecnologico', title: 'Tecnológico' },
-                { key: 'ecologico', title: 'Ecológico' }, { key: 'legal', title: 'Legal' }
-            ];
-            pillars.forEach(p => {
-                container.innerHTML += `
-                    <div class="card" style="padding:18px;">
-                        <h4 style="font-weight:600; font-size:0.92rem; color:var(--accent-color); margin-bottom:8px;">Factor ${p.title}</h4>
-                        <p contenteditable="true" style="font-size:0.85rem; line-height:1.5;" onblur="appState.pestel['${p.key}']=this.innerText.trim(); commitStateToStorage();">${appState.pestel[p.key]}</p>
-                    </div>
-                `;
-            });
-        }
-
-        // ================= LOGÍSTICA DE IMPRESIÓN PROFESIONAL =================
-        function printSingleSection() {
-            window.print();
-        }
-
-        function printCompleteDashboard() {
-            document.body.classList.add('print-all');
-            window.print();
-            // Limpieza post-impresión para reestablecer la reactividad SPA
-            setTimeout(() => { document.body.classList.remove('print-all'); }, 1000);
-        }
-
-        // --- BACKUP & RESTAURACIÓN LOGÍSTICA ---
+        // --- EXPORTAR E IMPORTAR RESPALDOS COMPLETO STATE (JSON GLOBAL) ---
         function exportStateJSON() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
-            const a = document.createElement('a'); a.setAttribute("href", dataStr);
-            a.setAttribute("download", `SGE_BACKUP_${appState.empresaNombre.replace(/\s+/g, '_')}.json`);
-            document.body.appendChild(a); a.click(); a.remove();
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", `SGE_BACKUP_${appState.empresaNombre.replace(/\s+/g, '_')}.json`);
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
         }
-        function triggerImportFile() { document.getElementById('upload-file-gateway').click(); }
-        function importStateJSON(ev) {
-            const f = ev.target.files[0]; if(!f) return;
-            const r = new FileReader();
-            r.onload = function(e) {
+
+        function triggerImportFile() {
+            document.getElementById('upload-file-gateway').click();
+        }
+
+        function importStateJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
                 try {
-                    appState = JSON.parse(e.target.result); commitStateToStorage(); renderApplicationDOM(); rebuildRadarMetricsChart();
-                    alert("¡Módulos de Planificación Estratégica sincronizados e importados con éxito total!");
-                } catch(err) { alert("Archivo JSON corrupto."); }
+                    const importedObj = JSON.parse(e.target.result);
+                    if (importedObj.empresaNombre && importedObj.mision) {
+                        appState = importedObj;
+                        commitStateToStorage();
+                        renderApplicationDOM();
+                        alert("¡Respaldo de Planificación Estratégica importado con éxito completo!");
+                    } else {
+                        alert("Estructura de archivo JSON no válida.");
+                    }
+                } catch (err) {
+                    alert("Error crítico leyendo el archivo estratégico.");
+                }
             };
-            r.readAsText(f);
+            reader.readAsText(file);
         }
+
+        // --- SISTEMA RESTAURACIÓN DE SEGURIDAD ---
         function restoreVoltDefaults() {
-            if(confirm("¿Seguro que deseas restaurar los datos de Volt Ecuador por defecto?")) {
-                appState = JSON.parse(JSON.stringify(VOLT_CORE_DEFAULTS)); commitStateToStorage(); renderApplicationDOM(); rebuildRadarMetricsChart();
+            if(confirm("¿Confirmas la restauración completa a los valores de Volt Ecuador? Los cambios actuales en memoria se sobrescribirán.")) {
+                appState = JSON.parse(JSON.stringify(VOLT_CORE_DEFAULTS));
+                commitStateToStorage();
+                renderApplicationDOM();
             }
         }
     </script>
