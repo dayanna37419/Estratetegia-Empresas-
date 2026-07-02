@@ -3,18 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGE Enterprise | Executive Strategy Dashboard</title>
-    
+    <title>SGE - Sistema de Gestión Estratégica</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    
     <style>
-        /* --- SISTEMA DE DISEÑO & VARIABLES DE ESTADO --- */
         :root {
-            --bg-main: #f8fafc;
+            --bg-primary: #f8fafc;
             --bg-sidebar: #0f172a;
             --sidebar-text: #94a3b8;
             --sidebar-active: #38bdf8;
@@ -22,90 +19,1855 @@
             --text-main: #1e293b;
             --text-muted: #64748b;
             --border-color: #e2e8f0;
-            --accent-color: #2563eb;
-            --accent-hover: #1d4ed8;
+            --accent-color: #0284c7;
+            --accent-hover: #0369a1;
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
-            --radius-lg: 12px;
-            --radius-md: 8px;
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
         }
 
         [data-theme="dark"] {
-            --bg-main: #0b0f19;
+            --bg-primary: #0b0f19;
             --bg-sidebar: #030712;
+            --sidebar-text: #6b7280;
+            --sidebar-active: #38bdf8;
             --card-bg: #111827;
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
             --border-color: #374151;
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3);
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-main); color: var(--text-main); display: flex; min-height: 100vh; overflow-x: hidden; transition: background-color 0.3s ease; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
 
-        /* --- LAYOUT: SIDEBAR CORPORATIVO --- */
-        #sidebar { width: 280px; background-color: var(--bg-sidebar); color: #ffffff; display: flex; flex-direction: column; position: fixed; top: 0; bottom: 0; left: 0; z-index: 50; transition: var(--transition); border-right: 1px solid rgba(255, 255, 255, 0.05); }
-        #sidebar.collapsed { width: 75px; }
-        #sidebar.collapsed .nav-text, #sidebar.collapsed .brand-name, #sidebar.collapsed .sidebar-footer { display: none; }
-        
-        .brand-area { height: 70px; display: flex; align-items: center; padding: 0 24px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
-        .brand-name { font-weight: 700; font-size: 1.1rem; letter-spacing: -0.5px; color: #f8fafc; margin-left: 12px; }
-        
-        .nav-links { list-style: none; padding: 20px 12px; overflow-y: auto; flex-grow: 1; }
-        .nav-item { display: flex; align-items: center; padding: 12px 16px; color: var(--sidebar-text); text-decoration: none; border-radius: var(--radius-md); margin-bottom: 6px; cursor: pointer; transition: var(--transition); }
-        .nav-item:hover, .nav-item.active { background-color: rgba(255, 255, 255, 0.04); color: var(--sidebar-active); }
-        .nav-item svg { width: 20px; height: 20px; flex-shrink: 0; }
-        .nav-text { margin-left: 14px; font-size: 0.9rem; font-weight: 500; }
-        .sidebar-footer { padding: 20px; border-top: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.75rem; color: var(--sidebar-text); text-align: center; }
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
 
-        /* --- CONTENEDORES Y NAVEGACIÓN SPA --- */
-        #main-container { flex-grow: 1; margin-left: 280px; padding: 100px 40px 40px 40px; transition: var(--transition); min-width: 0; }
-        #main-container.expanded { margin-left: 75px; }
-        
-        #topbar { position: fixed; top: 0; right: 0; left: 280px; height: 70px; background-color: var(--card-bg); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; z-index: 40; transition: var(--transition); box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); }
-        #topbar.expanded { left: 75px; }
-        
-        .topbar-left { display: flex; align-items: center; gap: 20px; }
-        .topbar-right { display: flex; align-items: center; gap: 12px; }
+        /* --- SIDEBAR --- */
+        #sidebar {
+            width: 260px;
+            background-color: var(--bg-sidebar);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 50;
+            transition: var(--transition);
+        }
 
-        /* --- BOTONES PREMIUM & CONTROLES --- */
-        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: var(--radius-md); font-weight: 500; font-size: 0.85rem; cursor: pointer; border: 1px solid transparent; transition: var(--transition); user-select: none; }
+        #sidebar.collapsed {
+            width: 70px;
+        }
+
+        #sidebar.collapsed .nav-text, 
+        #sidebar.collapsed .brand-name,
+        #sidebar.collapsed .sidebar-footer {
+            display: none;
+        }
+
+        .brand-area {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .brand-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            color: #f8fafc;
+            margin-left: 10px;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 15px 10px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .nav-links::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--sidebar-active);
+        }
+
+        .nav-item svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .nav-text {
+            margin-left: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* --- MAIN CONTENT --- */
+        #main-container {
+            flex-grow: 1;
+            margin-left: 260px;
+            padding: 90px 30px 40px 30px;
+            transition: var(--transition);
+            min-width: 0;
+        }
+
+        #main-container.expanded {
+            margin-left: 70px;
+        }
+
+        /* --- TOPBAR --- */
+        #topbar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 260px;
+            height: 70px;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            z-index: 40;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        #topbar.expanded {
+            left: 70px;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-grow: 1;
+            max-width: 500px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 8px 12px 8px 36px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            outline: none;
+        }
+
+        .search-box svg {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            color: var(--text-muted);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* --- BUTTONS & CONTROLS --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: var(--transition);
+        }
+
         .btn-primary { background-color: var(--accent-color); color: white; }
         .btn-primary:hover { background-color: var(--accent-hover); }
         .btn-secondary { background-color: transparent; border-color: var(--border-color); color: var(--text-main); }
-        .btn-secondary:hover { background-color: var(--bg-main); border-color: var(--text-muted); }
+        .btn-secondary:hover { background-color: var(--bg-primary); }
         .btn-danger { background-color: var(--danger); color: white; }
-        
-        .btn-icon { padding: 10px; border-radius: var(--radius-md); border: 1px solid var(--border-color); cursor: pointer; background: var(--card-bg); display: flex; align-items: center; justify-content: center; transition: var(--transition); }
-        .btn-icon:hover { background-color: var(--bg-main); }
-        .btn-icon svg { width: 18px; height: 18px; stroke: var(--text-main); fill: none; }
+        .btn-icon { padding: 8px; border-radius: 6px; border: 1px solid var(--border-color); cursor: pointer; fill: var(--text-main); display: flex; align-items: center; justify-content: center; background: var(--card-bg); }
 
-        /* --- ESTRUCTURAS DE SECCIÓN & GRID --- */
-        .dashboard-section { display: none; animation: fadeIn SPA 0.3s ease; }
-        .dashboard-section.active { display: block; }
-        @keyframes fadeInSPA { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        /* --- CARDS & ARCHITECTURE --- */
+        .dashboard-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
 
-        .section-header { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; }
-        .section-title { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px; color: var(--text-main); }
+        .dashboard-section.active {
+            display: block;
+        }
 
-        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 24px; margin-bottom: 24px; }
-        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 24px; }
-        .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 24px; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-        .card { background-color: var(--card-bg); border-radius: var(--radius-lg); border: 1px solid var(--border-color); padding: 24px; box-shadow: var(--shadow-md); position: relative; }
-        .card-header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
-        .card-title { font-size: 1rem; font-weight: 600; color: var(--text-main); }
+        .section-header {
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-        /* --- MOTOR DE EDICIÓN IN-PLACE CORPORATIVO --- */
-        [contenteditable="true"] { padding: 4px 8px; border-radius: var(--radius-md); outline: none; transition: var(--transition); }
-        [contenteditable="true"]:hover { background-color: rgba(37, 99, 235, 0.04); }
-        [contenteditable="true"]:focus { background-color: var(--card-bg); box-shadow: 0 0 0 2px var(--accent-color); }
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
 
-        /* --- SEMÁFOROS, BADGES Y BARRAS DE PROGRESO --- */
-        .badge { display: inline-block; padding: 4px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-align: center; }
-        .badge-success { background-color: rgba(16, 185, 129, 0.12); color: var(--success); }
-        .badge-warning { background-color: rgba(245, 158, 11, 0.12); color: var(--warning); }
-        .badge-danger { background-color: rgba(239, 68, 6
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 25px; }
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 20px; margin-bottom: 25px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 25px; }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        /* --- EDITABLE TEXT --- */
+        [contenteditable="true"] {
+            padding: 4px;
+            border-radius: 4px;
+            transition: var(--transition);
+            outline: none;
+        }
+
+        [contenteditable="true"]:hover {
+            background-color: rgba(56, 189, 248, 0.1);
+            box-shadow: 0 0 0 1px var(--sidebar-active);
+        }
+
+        [contenteditable="true"]:focus {
+            background-color: var(--card-bg);
+            box-shadow: 0 0 0 2px var(--accent-color);
+        }
+
+        /* --- TABLES --- */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background-color: var(--bg-primary);
+            color: var(--text-muted);
+            padding: 12px 16px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        tr:last-child td { border-bottom: none; }
+
+        /* --- KPI CARD --- */
+        .kpi-metric-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin: 15px 0 10px 0;
+        }
+        .kpi-value { font-size: 1.8rem; font-weight: 700; color: var(--text-main); }
+        .kpi-target { font-size: 0.85rem; color: var(--text-muted); }
+        .progress-bar-bg { background-color: var(--bg-primary); height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+        .progress-bar-fill { height: 100%; background-color: var(--accent-color); transition: width 0.5s ease; }
+        .badge-status { display: inline-flex; align-items: center; gap: 5px; padding: 4px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+        .status-success { background-color: rgba(16, 185, 129, 0.15); color: #059669; }
+        .status-warning { background-color: rgba(245, 158, 11, 0.15); color: #d97706; }
+        .status-danger { background-color: rgba(239, 68, 68, 0.15); color: #dc2626; }
+
+        /* --- MATRICES GRID --- */
+        .foda-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .foda-box { border-left: 4px solid var(--accent-color); padding: 15px; border-radius: 4px; background: var(--bg-primary); }
+        .foda-F { border-color: var(--success); }
+        .foda-O { border-color: var(--accent-color); }
+        .foda-D { border-color: var(--warning); }
+        .foda-A { border-color: var(--danger); }
+
+        /* --- DRAG & DROP COGNITIVE MATRICES --- */
+        .interactive-matrix-container {
+            position: relative;
+            width: 100%;
+            padding-top: 100%; /* Aspect ratio 1:1 */
+            border: 2px solid var(--border-color);
+            background: var(--bg-primary);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .matrix-quadrants {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+        }
+
+        .quadrant {
+            border: 1px dashed var(--border-color);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--text-muted);
+            opacity: 0.4;
+            font-size: 1.2rem;
+        }
+
+        .matrix-canvas-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10;
+        }
+
+        .draggable-item {
+            position: absolute;
+            padding: 6px 12px;
+            background: var(--card-bg);
+            border: 1px solid var(--accent-color);
+            color: var(--text-main);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: move;
+            box-shadow: var(--shadow);
+            z-index: 20;
+            white-space: nowrap;
+            user-select: none;
+        }
+
+        /* --- PORTER VALUE CHAIN --- */
+        .value-chain-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .support-activities, .primary-activities {
+            display: flex;
+            gap: 10px;
+        }
+        .chain-box {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 8px;
+            flex-grow: 1;
+            min-height: 100px;
+        }
+
+        /* --- LISTS CONFIG --- */
+        .editable-list { list-style: none; }
+        .editable-list-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border-color); }
+        .editable-list-item:last-child { border: none; }
+
+        /* --- RESPONSIVE & UTILS --- */
+        @media(max-width: 1024px) {
+            #sidebar { width: 70px; }
+            #sidebar .nav-text, #sidebar .brand-name { display: none; }
+            #main-container { margin-left: 70px; }
+            #topbar { left: 70px; }
+        }
+
+        @media print {
+            #sidebar, #topbar, .btn, .no-print { display: none !important; }
+            #main-container { margin: 0 !important; padding: 0 !important; }
+            .dashboard-section { display: block !important; page-break-after: always; }
+            .card { border: none !important; box-shadow: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside id="sidebar">
+        <div class="brand-area">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--sidebar-active)" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            <span class="brand-name">SGE Enterprise</span>
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item active" onclick="switchSection('inicio')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span class="nav-text">Inicio y Filosofía</span>
+            </li>
+            <li class="nav-item" onclick="switchSection('metas-objetivos')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                <span class="nav-text">Metas y Objetivos</span>
+            </li>
+            <li class="nav-item" onclick="switchSection('kpis')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                <span class="nav-text">Cuadro KPIs</span>
+            </li>
+            <li class="nav-item" onclick="switchSection('foda')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l-7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                <span class="nav-text">Análisis FODA</span>
+            </li>
+            <li class="nav-item" onclick="switchSection('porter-pestel')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                <span class="nav-text">Entorno y Valor</span>
+            </li>
+            <li class="nav-item" onclick="switchSection('diagnostico-interno-externo')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                <span class="nav-text">Matrices EFI / EFE / MPC</span>
+            </li>
+            <li class="nav-item" onclick="switchSection('matrices-posicionamiento')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21H3V3"></path><path d="M18 8l-4 4-4-4-4 4"></path></svg>
+                <span class="nav-text">PEYEA y Carteras</span>
+            </li>
+            <li class="nav-item" onclick="switchSection('decision-estrategica')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2</polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                <span class="nav-text">Estrategia Final MCPE</span>
+            </li>
+        </ul>
+    </aside>
+
+    <div id="main-container">
+        <header id="topbar">
+            <div class="topbar-left">
+                <button class="btn-icon" onclick="toggleSidebar()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
+                <div class="search-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="global-search" placeholder="Buscar métricas, análisis o planes..." oninput="executeGlobalSearch()">
+                </div>
+            </div>
+            <div class="topbar-right">
+                <span style="font-size:0.75rem; color: var(--text-muted);" id="last-update-tag">Último cambio: Hoy</span>
+                <button class="btn-icon" onclick="toggleTheme()" title="Cambiar Tema">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
+                <button class="btn btn-secondary" onclick="exportDataJSON()">Exportar JSON</button>
+                <button class="btn btn-secondary" onclick="triggerImportJSON()">Importar JSON</button>
+                <button class="btn btn-primary" onclick="saveToLocalStorage()">Guardar Todo</button>
+                <button class="btn btn-danger" onclick="resetDefaultData()">Restaurar</button>
+            </div>
+        </header>
+        <input type="file" id="json-file-input" style="display: none;" onchange="importDataJSON(event)">
+
+        <main id="section-inicio" class="dashboard-section active">
+            <div class="section-header">
+                <div>
+                    <h1 class="section-title" contenteditable="true" id="data-empresa-nombre">Volt Ecuador</h1>
+                    <p style="color: var(--text-muted);" contenteditable="true" id="data-empresa-sub">Planificación Estratégica Institucional y Modelo de Negocio</p>
+                </div>
+            </div>
+            <div class="grid-3">
+                <div class="card">
+                    <h3>Misión</h3>
+                    <p style="margin-top:15px; line-height: 1.6;" contenteditable="true" id="data-mision">Dinamizar el mercado de bebidas funcionales e industriales proporcionando energía accesible de alta calidad para el segmento trabajador y masivo del Ecuador, asegurando rentabilidad y distribución omnipresente.</p>
+                </div>
+                <div class="card">
+                    <h3>Visión</h3>
+                    <p style="margin-top:15px; line-height: 1.6;" contenteditable="true" id="data-vision">Convertirse para el año 2028 en la marca líder absoluta de bebidas energizantes en el territorio ecuatoriano, expandiendo la cartera hacia productos saludables y ecológicos de alta tracción comercial.</p>
+                </div>
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <h3>Valores Corporativos</h3>
+                        <button class="btn btn-secondary" style="padding:2px 8px; font-size:0.7rem;" onclick="addListItem('data-valores-list')">+ Añadir</button>
+                    </div>
+                    <ul class="editable-list" id="data-valores-list" style="margin-top:15px;">
+                        </ul>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Resumen Ejecutivo</h3>
+                <p style="margin-top:15px; line-height: 1.7;" contenteditable="true" id="data-resumen">Volt Ecuador opera bajo una estrategia disruptiva de liderazgo en costos. Orientada inicialmente a un target demográfico de alta exigencia física (conductores, obreros, estudiantes), la organización busca consolidar su cadena de suministro y migrar ordenadamente hacia nichos de valor añadido para mitigar riesgos regulatorios e impositivos sobre bebidas azucaradas.</p>
+            </div>
+        </main>
+
+        <main id="section-metas-objetivos" class="dashboard-section">
+            <div class="section-header">
+                <h1 class="section-title">Estructura Meta-Objetivos (SMART)</h1>
+                <button class="btn btn-primary" onclick="appendTableRow('table-metas')">+ Agregar Meta</button>
+            </div>
+            <div class="card">
+                <h3>Metas Organizacionales de Largo Plazo</h3>
+                <div class="table-container">
+                    <table id="table-metas">
+                        <thead>
+                            <tr>
+                                <th>Meta Global</th>
+                                <th>Específica</th>
+                                <th>Medible</th>
+                                <th>Alcanzable</th>
+                                <th>Relevante</th>
+                                <th>Plazo</th>
+                                <th>Estado</th>
+                                <th class="no-print">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card" style="margin-top:25px;">
+                <div class="section-header" style="margin-bottom:10px; padding:0;">
+                    <h3>Objetivos Estratégicos Desplegados</h3>
+                    <button class="btn btn-primary" onclick="appendTableRow('table-objetivos')">+ Agregar Objetivo</button>
+                </div>
+                <div class="table-container">
+                    <table id="table-objetivos">
+                        <thead>
+                            <tr>
+                                <th>Objetivo Corporativo</th>
+                                <th>Líder / Responsable</th>
+                                <th>KPI de Control</th>
+                                <th>Horizonte Temporal</th>
+                                <th>Estado</th>
+                                <th class="no-print">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <main id="section-kpis" class="dashboard-section">
+            <div class="section-header">
+                <h1 class="section-title">Cuadro de Mando Integral (KPIs)</h1>
+            </div>
+            <div class="grid-4" id="kpi-cards-grid">
+                </div>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Cumplimiento General de Metas por Perspectiva</h3>
+                    <canvas id="chart-kpis-radar" style="max-height: 350px; margin-top:20px;"></canvas>
+                </div>
+                <div class="card">
+                    <h3>Evolución de Cuota de Mercado (%)</h3>
+                    <canvas id="chart-kpis-line" style="max-height: 350px; margin-top:20px;"></canvas>
+                </div>
+            </div>
+        </main>
+
+        <main id="section-foda" class="dashboard-section">
+            <div class="section-header">
+                <h1 class="section-title">Diagnóstico Interno-Externo (FODA Cruzado)</h1>
+            </div>
+            <div class="grid-2">
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                        <h3 class="status-success" style="padding:5px 10px; border-radius:6px;">Fortalezas (Interno)</h3>
+                        <button class="btn btn-secondary" style="padding:2px 8px; font-size:0.7rem;" onclick="addListItem('foda-f-list')">+ Añadir</button>
+                    </div>
+                    <ul class="editable-list" id="foda-f-list"></ul>
+                </div>
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                        <h3 class="status-warning" style="padding:5px 10px; border-radius:6px;">Debilidades (Interno)</h3>
+                        <button class="btn btn-secondary" style="padding:2px 8px; font-size:0.7rem;" onclick="addListItem('foda-d-list')">+ Añadir</button>
+                    </div>
+                    <ul class="editable-list" id="foda-d-list"></ul>
+                </div>
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                        <h3 class="status-success" style="padding:5px 10px; border-radius:6px;">Oportunidades (Externo)</h3>
+                        <button class="btn btn-secondary" style="padding:2px 8px; font-size:0.7rem;" onclick="addListItem('foda-o-list')">+ Añadir</button>
+                    </div>
+                    <ul class="editable-list" id="foda-o-list"></ul>
+                </div>
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                        <h3 class="status-danger" style="padding:5px 10px; border-radius:6px;">Amenazas (Externo)</h3>
+                        <button class="btn btn-secondary" style="padding:2px 8px; font-size:0.7rem;" onclick="addListItem('foda-a-list')">+ Añadir</button>
+                    </div>
+                    <ul class="editable-list" id="foda-a-list"></ul>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:25px;">
+                <h3>Matriz de Estrategias Cruzadas (FO - FA - DO - DA)</h3>
+                <div class="table-container" style="margin-top:15px;">
+                    <table>
+                        <tr>
+                            <th style="width:20%">Factores</th>
+                            <th>Estrategias Ofensivas (FO) / Maxi-Maxi</th>
+                            <th>Estrategias Defensivas (FA) / Maxi-Mini</th>
+                        </tr>
+                        <tr>
+                            <th>Fuerzas Internas (F)</th>
+                            <td contenteditable="true" id="mx-foda-fo">Aprovechar los canales intensivos de distribución corporativa para introducir variantes sin azúcar directamente en tiendas de barrio (Tiendas, gasolineras).</td>
+                            <td contenteditable="true" id="mx-foda-fa">Desplegar campañas masivas de educación nutricional usando la robusta red de marketing para contrarrestar impuestos a bebidas carbonatadas.</td>
+                        </tr>
+                        <tr>
+                            <th>Debilidades Internas (D)</th>
+                            <th>Estrategias de Reorientación (DO) / Mini-Maxi</th>
+                            <th>Estrategias de Supervivencia (DA) / Mini-Mini</th>
+                        </tr>
+                        <tr>
+                            <th>Factores Externos</th>
+                            <td contenteditable="true" id="mx-foda-do">Establecer alianzas estratégicas con maquiladores locales certificados orgánicos para mitigar la dependencia de una única formulación química industrial.</td>
+                            <td contenteditable="true" id="mx-foda-da">Diversificar el portafolio de productos hacia aguas purificadas e isotónicos de bajo costo operativo para blindar la caída en ventas del producto principal.</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <main id="section-porter-pestel" class="dashboard-section">
+            <div class="section-header">
+                <h1 class="section-title">Análisis de Macroentorno y Cadena de Valor</h1>
+            </div>
+            
+            <div class="card">
+                <h3>Macroentorno PESTEL</h3>
+                <div class="grid-3" style="margin-top:15px;">
+                    <div style="background:var(--bg-primary); padding:15px; border-radius:8px;">
+                        <h5 style="color:var(--accent-color)">Político</h5>
+                        <p contenteditable="true" id="pestel-p" style="font-size:0.85rem; margin-top:5px;">Estabilidad arancelaria en la Región Andina, regulaciones de etiquetado gubernamental (semáforo de salud).</p>
+                    </div>
+                    <div style="background:var(--bg-primary); padding:15px; border-radius:8px;">
+                        <h5 style="color:var(--accent-color)">Económico</h5>
+                        <p contenteditable="true" id="pestel-e" style="font-size:0.85rem; margin-top:5px;">Índice de inflación moderada en economía dolarizada, afectación directa del poder adquisitivo masivo.</p>
+                    </div>
+                    <div style="background:var(--bg-primary); padding:15px; border-radius:8px;">
+                        <h5 style="color:var(--accent-color)">Social</h5>
+                        <p contenteditable="true" id="pestel-s" style="font-size:0.85rem; margin-top:5px;">Tendencias crecientes hacia el fitness y bienestar, combinadas con extensas jornadas laborales en subempleo.</p>
+                    </div>
+                    <div style="background:var(--bg-primary); padding:15px; border-radius:8px;">
+                        <h5 style="color:var(--accent-color)">Tecnológico</h5>
+                        <p contenteditable="true" id="pestel-t" style="font-size:0.85rem; margin-top:5px;">Automatización de soplado de botellas PET y optimización algorítmica de rutas comerciales de distribución.</p>
+                    </div>
+                    <div style="background:var(--bg-primary); padding:15px; border-radius:8px;">
+                        <h5 style="color:var(--accent-color)">Ambiental</h5>
+                        <p contenteditable="true" id="pestel-a" style="font-size:0.85rem; margin-top:5px;">Políticas estrictas de reciclaje de plástico post-consumo y presiones por el uso eficiente de fuentes hídricas.</p>
+                    </div>
+                    <div style="background:var(--bg-primary); padding:15px; border-radius:8px;">
+                        <h5 style="color:var(--accent-color)">Legal</h5>
+                        <p contenteditable="true" id="pestel-l" style="font-size:0.85rem; margin-top:5px;">Leyes de defensa del consumidor, normativas técnicas de sanidad (ARCSA) y regulaciones laborales locales.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:25px;">
+                <h3>Cadena de Valor de Michael Porter</h3>
+                <div class="value-chain-container">
+                    <div class="support-activities">
+                        <div class="chain-box">
+                            <strong>Infraestructura:</strong>
+                            <p contenteditable="true" id="porter-infra" style="font-size:0.8rem; margin-top:5px;">Sistemas financieros automatizados, gestión corporativa centralizada.</p>
+                        </div>
+                        <div class="chain-box">
+                            <strong>RRHH:</strong>
+                            <p contenteditable="true" id="porter-rrhh" style="font-size:0.8rem; margin-top:5px;">Capacitación en ventas intensivas, bonos por cumplimiento de rutas.</p>
+                        </div>
+                        <div class="chain-box">
+                            <strong>Tecnología:</strong>
+                            <p contenteditable="true" id="porter-tech" style="font-size:0.8rem; margin-top:5px;">I+D de sabores estabilizados, software logístico en la nube.</p>
+                        </div>
+                    </div>
+                    <div class="primary-activities">
+                        <div class="chain-box">
+                            <strong>Logística Int.:</strong>
+                            <p contenteditable="true" id="porter-log-int" style="font-size:0.8rem; margin-top:5px;">Importación a granel de taurina y cafeína pura.</p>
+                        </div>
+                        <div class="chain-box">
+                            <strong>Operaciones:</strong>
+                            <p contenteditable="true" id="porter-ops" style="font-size:0.8rem; margin-top:5px;">Líneas de embotellado de alta velocidad automatizadas.</p>
+                        </div>
+                        <div class="chain-box">
+                            <strong>Logística Ext.:</strong>
+                            <p contenteditable="true" id="porter-log-ext" style="font-size:0.8rem; margin-top:5px;">Distribución masiva capilar a tiendas minoristas.</p>
+                        </div>
+                        <div class="chain-box">
+                            <strong>Mkt & Ventas:</strong>
+                            <p contenteditable="true" id="porter-mkt" style="font-size:0.8rem; margin-top:5px;">Campañas en puntos de venta (POP) y precios de penetración.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <main id="section-diagnostico-interno-externo" class="dashboard-section">
+            <div class="section-header">
+                <h1 class="section-title">Evaluación de Factores (EFI, EFE y MPC)</h1>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <h3>Matriz EFI (Evaluación de Factores Internos)</h3>
+                        <button class="btn btn-secondary" style="padding:2px 8px; font-size:0.7rem;" onclick="appendEvaluacionRow('table-efi')">+ Factor</button>
+                    </div>
+                    <div class="table-container">
+                        <table id="table-efi">
+                            <thead>
+                                <tr>
+                                    <th>Factor Crítico Interno</th>
+                                    <th style="width:15%">Peso</th>
+                                    <th style="width:15%">Clasif.</th>
+                                    <th style="width:15%">Ponderación</th>
+                                    <th class="no-print" style="width:10%">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                                <tr style="background: var(--bg-primary); font-weight:700;">
+                                    <td>Total Diagnóstico Interno</td>
+                                    <td id="efi-total-peso">1.00</td>
+                                    <td>-</td>
+                                    <td id="efi-total-ponderado">0.00</td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <h3>Matriz EFE (Evaluación de Factores Externos)</h3>
+                        <button class="btn btn-secondary" style="padding:2px 8px; font-size:0.7rem;" onclick="appendEvaluacionRow('table-efe')">+ Factor</button>
+                    </div>
+                    <div class="table-container">
+                        <table id="table-efe">
+                            <thead>
+                                <tr>
+                                    <th>Factor Crítico Externo</th>
+                                    <th style="width:15%">Peso</th>
+                                    <th style="width:15%">Clasif.</th>
+                                    <th style="width:15%">Ponderación</th>
+                                    <th class="no-print" style="width:10%">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                                <tr style="background: var(--bg-primary); font-weight:700;">
+                                    <td>Total Diagnóstico Externo</td>
+                                    <td id="efe-total-peso">1.00</td>
+                                    <td>-</td>
+                                    <td id="efe-total-ponderado">0.00</td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:25px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h3>Matriz de Perfil Competitivo (MPC)</h3>
+                    <button class="btn btn-primary" onclick="appendMpcRow()">+ Añadir Factor Competitivo</button>
+                </div>
+                <div class="table-container">
+                    <table id="table-mpc">
+                        <thead>
+                            <tr>
+                                <th>Factores Críticos de Éxito</th>
+                                <th style="width:10%">Peso</th>
+                                <th style="width:12%">Clas. Propia</th>
+                                <th style="width:12%">Pond. Propia</th>
+                                <th style="width:12%">Clas. Comp. A</th>
+                                <th style="width:12%">Pond. Comp. A</th>
+                                <th style="width:12%">Clas. Comp. B</th>
+                                <th style="width:12%">Pond. Comp. B</th>
+                                <th class="no-print" style="width:8%">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot>
+                            <tr style="background:var(--bg-primary); font-weight:700;">
+                                <td>Totales Ponderados</td>
+                                <td id="mpc-tot-peso">1.00</td>
+                                <td>-</td>
+                                <td id="mpc-tot-propio">0.00</td>
+                                <td>-</td>
+                                <td id="mpc-tot-compa">0.00</td>
+                                <td>-</td>
+                                <td id="mpc-tot-compb">0.00</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <main id="section-matrices-posicionamiento" class="dashboard-section">
+            <div class="section-header">
+                <h1 class="section-title">Análisis de Cartera y Vector PEYEA</h1>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Parámetros Matriz PEYEA</h3>
+                    <div style="margin-top:15px; display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+                        <div>
+                            <label style="font-size:0.8rem; font-weight:600;">Fortaleza Financiera (FF: 1 a 6)</label>
+                            <input type="number" min="1" max="6" step="0.1" class="btn-secondary" style="width:100%; padding:6px; margin-top:5px; border-radius:4px;" id="peyea-ff" value="4.5" oninput="calculatePeyea()">
+                        </div>
+                        <div>
+                            <label style="font-size:0.8rem; font-weight:600;">Ventaja Competitiva (VC: -6 a -1)</label>
+                            <input type="number" min="-6" max="-1" step="0.1" class="btn-secondary" style="width:100%; padding:6px; margin-top:5px; border-radius:4px;" id="peyea-vc" value="-1.5" oninput="calculatePeyea()">
+                        </div>
+                        <div>
+                            <label style="font-size:0.8rem; font-weight:600;">Fortaleza Industrial (FI: 1 a 6)</label>
+                            <input type="number" min="1" max="6" step="0.1" class="btn-secondary" style="width:100%; padding:6px; margin-top:5px; border-radius:4px;" id="peyea-fi" value="5.0" oninput="calculatePeyea()">
+                        </div>
+                        <div>
+                            <label style="font-size:0.8rem; font-weight:600;">Estabilidad Entorno (EE: -6 a -1)</label>
+                            <input type="number" min="-6" max="-1" step="0.1" class="btn-secondary" style="width:100%; padding:6px; margin-top:5px; border-radius:4px;" id="peyea-ee" value="-4.0" oninput="calculatePeyea()">
+                        </div>
+                    </div>
+                    <div style="margin-top:20px; background:var(--bg-primary); padding:15px; border-radius:8px;">
+                        <h5>Resultado Vectorial:</h5>
+                        <p style="font-size:0.9rem; margin-top:5px;">Coordenada X (FI + VC): <strong id="peyea-coord-x">0</strong></p>
+                        <p style="font-size:0.9rem;">Coordenada Y (FF + EE): <strong id="peyea-coord-y">0</strong></p>
+                        <p style="font-size:1.1rem; margin-top:10px; color:var(--accent-color);">Estrategia Sugerida: <span id="peyea-profile-result" style="font-weight:700;">Agresiva</span></p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Gráfico de Vector Estratégico</h3>
+                    <div style="display:flex; justify-content:center; align-items:center; margin-top:10px;">
+                        <canvas id="peyea-canvas" width="300" height="300" style="background:#ffffff; border:1px solid var(--border-color); border-radius:8px;"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2" style="margin-top:25px;">
+                <div class="card">
+                    <h3>Matriz de Crecimiento BCG (Arrastra los Productos)</h3>
+                    <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">Mueve los círculos para representar la evolución estratégica del portafolio comercial.</p>
+                    <div class="interactive-matrix-container" id="bcg-matrix">
+                        <div class="matrix-quadrants">
+                            <div class="quadrant" style="background:rgba(56,189,248,0.05)">Estrellas</div>
+                            <div class="quadrant" style="background:rgba(16,185,129,0.05)">Incógnitas</div>
+                            <div class="quadrant" style="background:rgba(245,158,11,0.05)">Vacas</div>
+                            <div class="quadrant" style="background:rgba(239,68,68,0.05)">Perros</div>
+                        </div>
+                        <div class="draggable-item" style="top:25%; left:25%;" data-id="p1" draggable="true">Volt Original (PET)</div>
+                        <div class="draggable-item" style="top:15%; left:75%;" data-id="p2" draggable="true">Volt Ginseng Sin Azúcar</div>
+                        <div class="draggable-item" style="top:70%; left:20%;" data-id="p3" draggable="true">Volt Latas Focus</div>
+                        <div class="draggable-item" style="top:80%; left:80%;" data-id="p4" draggable="true">Extractos Energéticos de Nicho</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Matriz General Electric / McKinsey (Atractivo vs Competitividad)</h3>
+                    <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">Ubicación de las Unidades de Negocio Estratégicas (UNE).</p>
+                    <div class="interactive-matrix-container" id="mckinsey-matrix">
+                        <div class="matrix-quadrants" style="grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr;">
+                            <div class="quadrant" style="font-size:0.7rem;">Invertir/Crecer</div>
+                            <div class="quadrant" style="font-size:0.7rem;">Invertir/Crecer</div>
+                            <div class="quadrant" style="font-size:0.7rem;">Seleccionar</div>
+                            <div class="quadrant" style="font-size:0.7rem;">Invertir/Crecer</div>
+                            <div class="quadrant" style="font-size:0.7rem;">Seleccionar</div>
+                            <div class="quadrant" style="font-size:0.7rem;">Cosechar</div>
+                            <div class="quadrant" style="font-size:0.7rem;">Seleccionar</div>
+                            <div class="quadrant" style="font-size:0.7rem;">Cosechar</div>
+                            <div class="quadrant" style="font-size:0.7rem;">Desinvertir</div>
+                        </div>
+                        <div class="draggable-item" style="top:20%; left:15%; background:#0284c7; color:white;" data-id="u1" draggable="true">UNE Consumo Masivo</div>
+                        <div class="draggable-item" style="top:45%; left:45%;" data-id="u2" draggable="true">UNE Horeca Premium</div>
+                        <div class="draggable-item" style="top:75%; left:80%; background:#ef4444; color:white;" data-id="u3" draggable="true">UNE Exportaciones Sura</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <main id="section-decision-estrategica" class="dashboard-section">
+            <div class="section-header">
+                <h1 class="section-title">Formulación de Decisiones de Alta Dirección</h1>
+            </div>
+
+            <div class="card">
+                <h3>Matriz de la Gran Estrategia</h3>
+                <div class="grid-2" style="margin-top:15px;">
+                    <div style="background:var(--bg-primary); padding:15px; border-radius:8px; border-top:4px solid var(--accent-color);">
+                        <h4>Cuadrante I (Rápido Crecimiento / Posición Fuerte)</h4>
+                        <p contenteditable="true" id="ge-c1" style="font-size:0.85rem; margin-top:8px;">Desarrollo de mercado, penetración comercial agresiva e integración hacia adelante controlando flotas de despacho.</p>
+                    </div>
+                    <div style="background:var(--bg-primary); padding:15px; border-radius:8px; border-top:4px solid var(--success);">
+                        <h4>Cuadrante II (Rápido Crecimiento / Posición Débil)</h4>
+                        <p contenteditable="true" id="ge-c2" style="font-size:0.85rem; margin-top:8px;">Reorientación del modelo de marketing, alianzas distributivas o reformulación del núcleo tecnológico operativo.</p>
+                    </div>
+                    <div style="background:var(--bg-primary); padding:15px; border-radius:8px; border-top:4px solid var(--warning);">
+                        <h4>Cuadrante III (Lento Crecimiento / Posición Débil)</h4>
+                        <p contenteditable="true" id="ge-c3" style="font-size:0.85rem; margin-top:8px;">Alineamiento de costos estructurales, reducción drástica de activos no productivos y desinversión controlada.</p>
+                    </div>
+                    <div style="background:var(--bg-primary); padding:15px; border-radius:8px; border-top:4px solid var(--danger);">
+                        <h4>Cuadrante IV (Lento Crecimiento / Posición Fuerte)</h4>
+                        <p contenteditable="true" id="ge-c4" style="font-size:0.85rem; margin-top:8px;">Diversificación concéntrica hacia líneas saludables de alta rentabilidad, joint ventures internacionales de portafolio.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:25px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <h3>Matriz Cuantitativa de Planeación Estratégica (MCPE)</h3>
+                    <button class="btn btn-primary" onclick="appendMcpeRow()">+ Añadir Factor Clave</button>
+                </div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">Evalúa numéricamente el impacto relativo de las estrategias alternativas (PA: Puntaje de Atractivo de 1 a 4; TA: Total Atractivo).</p>
+                <div class="table-container">
+                    <table id="table-mcpe">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">Factores Clave Internos y Externos</th>
+                                <th rowspan="2" style="width:8%">Peso</th>
+                                <th colspan="2" style="text-align:center; background:rgba(2, 132, 199, 0.1);">Estrategia A: Penetración Nacional Costos</th>
+                                <th colspan="2" style="text-align:center; background:rgba(16, 185, 129, 0.1);">Estrategia B: Diversificación Saludable</th>
+                                <th rowspan="2" class="no-print" style="width:6%">Acción</th>
+                            </tr>
+                            <tr>
+                                <th style="width:8%">PA</th>
+                                <th style="width:10%">TA</th>
+                                <th style="width:8%">PA</th>
+                                <th style="width:10%">TA</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot>
+                            <tr style="background:var(--bg-primary); font-weight:700;">
+                                <td>Puntajes de Atractivo Totales Sumados</td>
+                                <td id="mcpe-tot-peso">1.00</td>
+                                <td>-</td>
+                                <td id="mcpe-tot-a" style="background:rgba(2,132,199,0.1)">0.00</td>
+                                <td>-</td>
+                                <td id="mcpe-tot-b" style="background:rgba(16,185,129,0.1)">0.00</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div style="margin-top:20px; padding:15px; border-radius:8px; background:rgba(56,189,248,0.1); border:1px solid var(--sidebar-active);">
+                    <h4>Dictamen de la Estrategia Recomendada:</h4>
+                    <p style="font-size:1.1rem; font-weight:700; margin-top:5px; color:var(--bg-sidebar);" id="mcpe-recommendation-text">Cargando resolución algorítmica...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- BASE DE DATOS INICIAL PRECARGADA (Volt Ecuador Modelo Corporativo) ---
+        const DEFAULT_SYSTEM_DATA = {
+            empresaNombre: "Volt Ecuador",
+            empresaSub: "Planificación Estratégica Institucional y Modelo de Negocio",
+            mision: "Dinamizar el mercado de bebidas funcionales e industriales proporcionando energía accesible de alta calidad para el segmento trabajador y masivo del Ecuador, asegurando rentabilidad y distribución omnipresente.",
+            vision: "Convertirse para el año 2028 en la marca líder absoluta de bebidas energizantes en el territorio ecuatoriano, expandiendo la cartera hacia productos saludables y ecológicos de alta tracción comercial.",
+            valores: ["Liderazgo en costos operativos", "Omnipresencia en distribución minorista", "Calidad industrial accesible", "Orientación al cliente masivo"],
+            resumen: "Volt Ecuador opera bajo una estrategia disruptiva de liderazgo en costos. Orientada inicialmente a un target demográfico de alta exigencia física (conductores, obreros, estudiantes), la organización busca consolidar su cadena de suministro y migrar ordenadamente hacia nichos de valor añadido para mitigar riesgos regulatorios e impositivos sobre bebidas azucaradas.",
+            metas: [
+                {m: "Incrementar cuota de mercado en Ecuador", e: "Alcanzar 55% de participación", mble: "Auditoría de mercado Ipsos", a: "Factible por canales de distribución", r: "Elevar tracción de ingresos", t: "Diciembre 2027", s: "En Progreso"},
+                {m: "Optimizar costos de embotellado masivo", e: "Reducir costos en envases PET", mble: "Disminución del 12% costo unitario", a: "Uso de sopladoras de alta velocidad", r: "Sostener margen de rentabilidad", t: "Junio 2027", s: "Completado"}
+            ],
+            objetivos: [
+                {o: "Desplegar 500 islas de visualización POP en tiendas", r: "Gerencia de Trade Marketing", i: "Número de tiendas activadas", p: "6 Meses", s: "En Progreso"},
+                {o: "Lanzar variante sin azúcar sabor arándanos", r: "I+D y Producción Industrial", i: "Lotes validados por ARCSA", p: "12 Meses", s: "Planificado"}
+            ],
+            fodaF: ["Red de distribución omnipresente en el canal tradicional", "Estructura de costos altamente eficiente", "Alta recordación de marca en el segmento masivo"],
+            fodaD: ["Dependencia de insumos importados críticos", "Bajo margen de maniobra ante impuestos azucarados", "Percepción de producto de baja salud nutricional"],
+            fodaO: ["Crecimiento de la demanda de bebidas funcionales sin azúcar", "Apertura de exportaciones hacia mercados limítrofes", "Automatización logística de bajo coste"],
+            fodaA: ["Leyes impositivas estrictas sobre plásticos y azúcares", "Inestabilidad económica de consumidores minoristas", "Guerra de precios con competidores transnacionales"],
+            pestelP: "Estabilidad arancelaria en la Región Andina, regulaciones de etiquetado gubernamental (semáforo de salud).",
+            pestelE: "Índice de inflación moderada en economía dolarizada, afectación directa del poder adquisitivo masivo.",
+            pestelS: "Tendencias crecientes hacia el fitness y bienestar, combinadas con extensas jornadas laborales en subempleo.",
+            pestelT: "Automatización de soplado de botellas PET y optimización algorítmica de rutas comerciales de distribución.",
+            pestelA: "Políticas estrictas de reciclaje de plástico post-consumo y presiones por el uso eficiente de fuentes hídricas.",
+            pestelL: "Leyes de defensa del consumidor, normativas técnicas de sanidad (ARCSA) y regulaciones laborales locales.",
+            porterInfra: "Sistemas financieros automatizados, gestión corporativa centralizada.",
+            porterRrhh: "Capacitación en ventas intensivas, bonos por cumplimiento de rutas.",
+            porterTech: "I+D de sabores estabilizados, software logístico en la nube.",
+            porterLogInt: "Importación a granel de taurina y cafeína pura.",
+            porterOps: "Líneas de embotellado de alta velocidad automatizadas.",
+            porterLogExt: "Distribución masiva capilar a tiendas minoristas.",
+            porterMkt: "Campañas en puntos de venta (POP) y precios de penetración.",
+            fodaFo: "Aprovechar los canales intensivos de distribución corporativa para introducir variantes sin azúcar directamente en tiendas.",
+            fodaFa: "Desplegar campañas masivas de educación nutricional usando la robusta red de marketing para contrarrestar impuestos.",
+            fodaDo: "Establecer alianzas estratégicas con maquiladores locales certificados orgánicos para mitigar dependencia química.",
+            fodaDa: "Diversificar el portafolio de productos hacia aguas purificadas e isotónicos de bajo costo operativo.",
+            efi: [
+                {f: "Sistema logístico propio capilar de alta cobertura", w: 0.20, c: 4},
+                {f: "Economías de escala en compras de materias primas", w: 0.15, c: 4},
+                {f: "Bajos márgenes unitarios de utilidad líquida", w: 0.15, c: 1},
+                {f: "Concentración en una sola categoría de producto", w: 0.20, c: 2},
+                {f: "Fuerza de ventas capacitada con incentivos", w: 0.30, c: 3}
+            ],
+            efe: [
+                {f: "Nuevas normativas de etiquetado restrictivo", w: 0.25, c: 2},
+                {f: "Incremento global en costos de transporte marítimo", w: 0.20, c: 2},
+                {f: "Preferencia por bebidas energéticas de base natural", w: 0.15, c: 3},
+                {f: "Crecimiento del canal de tiendas de descuento", w: 0.20, c: 4},
+                {f: "Incremento del subempleo que demanda estimulantes", w: 0.20, c: 4}
+            ],
+            mpc: [
+                {f: "Competitividad de Precios", w: 0.30, cp: 4, ca: 3, cb: 2},
+                {f: "Red de Distribución", w: 0.25, cp: 4, ca: 4, cb: 2},
+                {f: "Innovación de Portafolio", w: 0.20, cp: 2, ca: 3, cb: 4},
+                {f: "Campañas de Marketing", w: 0.15, cp: 3, ca: 4, cb: 3},
+                {f: "Capacidad Financiera", w: 0.10, cp: 3, ca: 4, cb: 4}
+            ],
+            peyea: {ff: 4.8, vc: -1.8, fi: 5.2, ee: -3.8},
+            granEstrategia: {
+                c1: "Desarrollo de mercado, penetración comercial agresiva e integración hacia adelante controlando flotas de despacho.",
+                c2: "Reorientación del modelo de marketing, alianzas distributivas o reformulación del núcleo tecnológico operativo.",
+                c3: "Alineamiento de costos estructurales, reducción drástica de activos no productivos y desinversión controlada.",
+                c4: "Diversificación concéntrica hacia líneas saludables de alta rentabilidad, joint ventures internacionales de portafolio."
+            },
+            mcpe: [
+                {f: "Fuerza del canal logístico tradicional minorista", w: 0.25, paA: 4, paB: 2},
+                {f: "Preferencia del consumidor hacia productos saludables", w: 0.20, paA: 1, paB: 4},
+                {f: "Impuestos fijos gubernamentales a azúcares", w: 0.30, paA: 2, paB: 4},
+                {f: "Eficiencia de costos industriales de embotellado", w: 0.25, paA: 4, paB: 1}
+            ],
+            dragPositions: {
+                p1: {top: 25, left: 25}, p2: {top: 15, left: 75}, p3: {top: 70, left: 20}, p4: {top: 80, left: 80},
+                u1: {top: 20, left: 15}, u2: {top: 45, left: 45}, u3: {top: 75, left: 80}
+            }
+        };
+
+        let currentData = {};
+
+        // --- SISTEMA INICIALIZADOR ---
+        window.addEventListener('DOMContentLoaded', () => {
+            if(localStorage.getItem('SGE_DATA_STORE')) {
+                try {
+                    currentData = JSON.parse(localStorage.getItem('SGE_DATA_STORE'));
+                } catch(e) {
+                    currentData = JSON.parse(JSON.stringify(DEFAULT_SYSTEM_DATA));
+                }
+            } else {
+                currentData = JSON.parse(JSON.stringify(DEFAULT_SYSTEM_DATA));
+            }
+            renderAllSections();
+            initCharts();
+            setupDragAndDrop();
+            updateLastModifiedTimestamp();
+        });
+
+        function updateLastModifiedTimestamp() {
+            const now = new Date();
+            document.getElementById('last-update-tag').innerText = `Último cambio: ${now.toLocaleTimeString()}`;
+        }
+
+        // --- MANEJO DE INTERFAZ & SECCIONES ---
+        function switchSection(sectionId) {
+            document.querySelectorAll('.dashboard-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            document.getElementById(`section-${sectionId}`).classList.add('active');
+            event.currentTarget.classList.add('active');
+            
+            // Re-renderizado de canvas por si cambian visibilidades
+            if(sectionId === 'matrices-posicionamiento') {
+                calculatePeyea();
+            }
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+            document.getElementById('main-container').classList.toggle('expanded');
+            document.getElementById('topbar').classList.toggle('expanded');
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const targetTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', targetTheme);
+        }
+
+        // --- RENDERS CORE DE DATOS ---
+        function renderAllSections() {
+            // Textos Simples
+            document.getElementById('data-empresa-nombre').innerText = currentData.empresaNombre;
+            document.getElementById('data-empresa-sub').innerText = currentData.empresaSub;
+            document.getElementById('data-mision').innerText = currentData.mision;
+            document.getElementById('data-vision').innerText = currentData.vision;
+            document.getElementById('data-resumen').innerText = currentData.resumen;
+
+            document.getElementById('pestel-p').innerText = currentData.pestelP;
+            document.getElementById('pestel-e').innerText = currentData.pestelE;
+            document.getElementById('pestel-s').innerText = currentData.pestelS;
+            document.getElementById('pestel-t').innerText = currentData.pestelT;
+            document.getElementById('pestel-a').innerText = currentData.pestelA;
+            document.getElementById('pestel-l').innerText = currentData.pestelL;
+
+            document.getElementById('porter-infra').innerText = currentData.porterInfra;
+            document.getElementById('porter-rrhh').innerText = currentData.porterRrhh;
+            document.getElementById('porter-tech').innerText = currentData.porterTech;
+            document.getElementById('porter-log-int').innerText = currentData.porterLogInt;
+            document.getElementById('porter-ops').innerText = currentData.porterOps;
+            document.getElementById('porter-log-ext').innerText = currentData.porterLogExt;
+            document.getElementById('porter-mkt').innerText = currentData.porterMkt;
+
+            document.getElementById('mx-foda-fo').innerText = currentData.fodaFo;
+            document.getElementById('mx-foda-fa').innerText = currentData.fodaFa;
+            document.getElementById('mx-foda-do').innerText = currentData.fodaDo;
+            document.getElementById('mx-foda-da').innerText = currentData.fodaDa;
+
+            document.getElementById('ge-c1').innerText = currentData.granEstrategia.c1;
+            document.getElementById('ge-c2').innerText = currentData.granEstrategia.c2;
+            document.getElementById('ge-c3').innerText = currentData.granEstrategia.c3;
+            document.getElementById('ge-c4').innerText = currentData.granEstrategia.c4;
+
+            // Listas
+            renderList('data-valores-list', currentData.valores);
+            renderList('foda-f-list', currentData.fodaF);
+            renderList('foda-o-list', currentData.fodaO);
+            renderList('foda-d-list', currentData.fodaD);
+            renderList('foda-a-list', currentData.fodaA);
+
+            // Tablas Metas y Objetivos
+            renderMetasTable();
+            renderObjetivosTable();
+            
+            // Cuadro KPIs Dinámicos
+            renderKpisGrid();
+
+            // Matrices Complejas
+            renderEvaluacionTable('table-efi', currentData.efi);
+            renderEvaluacionTable('table-efe', currentData.efe);
+            renderMpcTable();
+            renderMcpeTable();
+
+            // Inputs PEYEA
+            document.getElementById('peyea-ff').value = currentData.peyea.ff;
+            document.getElementById('peyea-vc').value = currentData.peyea.vc;
+            document.getElementById('peyea-fi').value = currentData.peyea.fi;
+            document.getElementById('peyea-ee').value = currentData.peyea.ee;
+
+            // Posicionamiento de Dragables
+            applyDragPositions();
+            
+            // Adición de Listeners Dinámicos Estáticos para Edición Rápida In-Place
+            setupBlurSync();
+        }
+
+        function setupBlurSync() {
+            const syncMap = [
+                {id: 'data-empresa-nombre', key: 'empresaNombre'},
+                {id: 'data-empresa-sub', key: 'empresaSub'},
+                {id: 'data-mision', key: 'mision'},
+                {id: 'data-vision', key: 'vision'},
+                {id: 'data-resumen', key: 'resumen'},
+                {id: 'pestel-p', key: 'pestelP'},
+                {id: 'pestel-e', key: 'pestelE'},
+                {id: 'pestel-s', key: 'pestelS'},
+                {id: 'pestel-t', key: 'pestelT'},
+                {id: 'pestel-a', key: 'pestelA'},
+                {id: 'pestel-l', key: 'pestelL'},
+                {id: 'porter-infra', key: 'porterInfra'},
+                {id: 'porter-rrhh', key: 'porterRrhh'},
+                {id: 'porter-tech', key: 'porterTech'},
+                {id: 'porter-log-int', key: 'porterLogInt'},
+                {id: 'porter-ops', key: 'porterOps'},
+                {id: 'porter-log-ext', key: 'porterLogExt'},
+                {id: 'porter-mkt', key: 'porterMkt'},
+                {id: 'mx-foda-fo', key: 'fodaFo'},
+                {id: 'mx-foda-fa', key: 'fodaFa'},
+                {id: 'mx-foda-do', key: 'fodaDo'},
+                {id: 'mx-foda-da', key: 'fodaDa'}
+            ];
+
+            syncMap.forEach(item => {
+                const el = document.getElementById(item.id);
+                if(el) {
+                    el.addEventListener('blur', () => {
+                        currentData[item.key] = el.innerText;
+                        autoSaveSilent();
+                    });
+                }
+            });
+
+            // Gran estrategia sync manual por subobjeto
+            ['c1','c2','c3','c4'].forEach(cx => {
+                const el = document.getElementById(`ge-${cx}`);
+                if(el) {
+                    el.addEventListener('blur', () => {
+                        currentData.granEstrategia[cx] = el.innerText;
+                        autoSaveSilent();
+                    });
+                }
+            });
+        }
+
+        // --- LOGICA DE RENDERIZADO DE COMPONENTES ---
+        function renderList(elementId, arrayData) {
+            const ul = document.getElementById(elementId);
+            ul.innerHTML = '';
+            arrayData.forEach((text, index) => {
+                const li = document.createElement('li');
+                li.className = 'editable-list-item';
+                li.innerHTML = `
+                    <span contenteditable="true" onblur="updateListValue('${elementId}', ${index}, this)">${text}</span>
+                    <span class="no-print" style="color:var(--danger); cursor:pointer; font-weight:700;" onclick="deleteListItem('${elementId}', ${index})">&times;</span>
+                `;
+                ul.appendChild(li);
+            });
+        }
+
+        function addListItem(elementId) {
+            let targetArray = getArrayByElementId(elementId);
+            targetArray.push("Nuevo elemento editable de planificación");
+            renderList(elementId, targetArray);
+            autoSaveSilent();
+        }
+
+        function updateListValue(elementId, index, element) {
+            let targetArray = getArrayByElementId(elementId);
+            targetArray[index] = element.innerText;
+            autoSaveSilent();
+        }
+
+        function deleteListItem(elementId, index) {
+            let targetArray = getArrayByElementId(elementId);
+            targetArray.splice(index, 1);
+            renderList(elementId, targetArray);
+            autoSaveSilent();
+        }
+
+        function getArrayByElementId(id) {
+            if(id === 'data-valores-list') return currentData.valores;
+            if(id === 'foda-f-list') return currentData.fodaF;
+            if(id === 'foda-o-list') return currentData.fodaO;
+            if(id === 'foda-d-list') return currentData.fodaD;
+            if(id === 'foda-a-list') return currentData.fodaA;
+        }
+
+        // --- RENDERS DE TABLAS DINÁMICAS ---
+        function renderMetasTable() {
+            const tbody = document.querySelector('#table-metas tbody');
+            tbody.innerHTML = '';
+            currentData.metas.forEach((meta, i) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td contenteditable="true" onblur="syncTableField('metas', ${i}, 'm', this)">${meta.m}</td>
+                    <td contenteditable="true" onblur="syncTableField('metas', ${i}, 'e', this)">${meta.e}</td>
+                    <td contenteditable="true" onblur="syncTableField('metas', ${i}, 'mble', this)">${meta.mble}</td>
+                    <td contenteditable="true" onblur="syncTableField('metas', ${i}, 'a', this)">${meta.a}</td>
+                    <td contenteditable="true" onblur="syncTableField('metas', ${i}, 'r', this)">${meta.r}</td>
+                    <td contenteditable="true" onblur="syncTableField('metas', ${i}, 't', this)">${meta.t}</td>
+                    <td>
+                        <select onchange="syncTableField('metas', ${i}, 's', this)" style="border:none; background:transparent; font-weight:600; color:var(--text-main);">
+                            <option value="En Progreso" ${meta.s==='En Progreso'?'selected':''}>En Progreso</option>
+                            <option value="Completado" ${meta.s==='Completado'?'selected':''}>Completado</option>
+                            <option value="Riesgo" ${meta.s==='Riesgo'?'selected':''}>Riesgo</option>
+                        </select>
+                    </td>
+                    <td class="no-print"><button class="btn btn-danger" style="padding:2px 6px;" onclick="deleteTableRow('metas', ${i})">Eliminar</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderObjetivosTable() {
+            const tbody = document.querySelector('#table-objetivos tbody');
+            tbody.innerHTML = '';
+            currentData.objetivos.forEach((obj, i) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td contenteditable="true" onblur="syncTableField('objetivos', ${i}, 'o', this)">${obj.o}</td>
+                    <td contenteditable="true" onblur="syncTableField('objetivos', ${i}, 'r', this)">${obj.r}</td>
+                    <td contenteditable="true" onblur="syncTableField('objetivos', ${i}, 'i', this)">${obj.i}</td>
+                    <td contenteditable="true" onblur="syncTableField('objetivos', ${i}, 'p', this)">${obj.p}</td>
+                    <td>
+                        <select onchange="syncTableField('objetivos', ${i}, 's', this)" style="border:none; background:transparent; font-weight:600; color:var(--text-main);">
+                            <option value="Planificado" ${obj.s==='Planificado'?'selected':''}>Planificado</option>
+                            <option value="En Progreso" ${obj.s==='En Progreso'?'selected':''}>En Progreso</option>
+                            <option value="Detenido" ${obj.s==='Detenido'?'selected':''}>Detenido</option>
+                        </select>
+                    </td>
+                    <td class="no-print"><button class="btn btn-danger" style="padding:2px 6px;" onclick="deleteTableRow('objetivos', ${i})">Eliminar</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function syncTableField(arrayKey, index, key, element) {
+            currentData[arrayKey][index][key] = element.value !== undefined ? element.value : element.innerText;
+            autoSaveSilent();
+            if(arrayKey === 'metas' || arrayKey === 'objetivos') {
+                // Actualizar posibles repercusiones en gráficos o semáforos si existiesen
+            }
+        }
+
+        function appendTableRow(tableId) {
+            if(tableId === 'table-metas') {
+                currentData.metas.push({m:"Nueva Meta", e:"Específica", mble:"Metodología", a:"Alcanzable", r:"Estratégica", t:"12 Meses", s:"En Progreso"});
+                renderMetasTable();
+            } else if(tableId === 'table-objetivos') {
+                currentData.objetivos.push({o:"Nuevo Objetivo Operativo", r:"Asignado", i:"Indicador Base", p:"Plazo Largo", s:"Planificado"});
+                renderObjetivosTable();
+            }
+            autoSaveSilent();
+        }
+
+        function deleteTableRow(arrayKey, index) {
+            currentData[arrayKey].splice(index, 1);
+            if(arrayKey === 'metas') renderMetasTable();
+            if(arrayKey === 'objetivos') renderObjetivosTable();
+            autoSaveSilent();
+        }
+
+        // --- SISTEMA CUADRO DE MANDOS INTEGRAL (KPI CARD ENGINES) ---
+        // Generamos métricas simuladas controlables para dar alta interactividad al software corporativo
+        const KPI_MOCK_METRICS = [
+            {id:"kpi-1", name:"Cuota de Mercado Total", value:48.5, target:55.0, unit:"%", cat:"Financiera"},
+            {id:"kpi-2", name:"Costo Logístico Unitario", value:0.11, target:0.09, unit:"USD", cat:"Procesos"},
+            {id:"kpi-3", name:"Retención en Canal Tradicional", value:92.4, target:95.0, unit:"%", cat:"Clientes"},
+            {id:"kpi-4", name:"Efectividad Lanzamiento Sin Azúcar", value:76.0, target:80.0, unit:"%", cat:"Aprendizaje"}
+        ];
+
+        function renderKpisGrid() {
+            // Si el LocalStorage no los tiene, los monta en memoria operacional volatíl o guardada
+            if(!currentData.kpisStore) {
+                currentData.kpisStore = KPI_MOCK_METRICS;
+            }
+            const grid = document.getElementById('kpi-cards-grid');
+            grid.innerHTML = '';
+
+            currentData.kpisStore.forEach((kpi, idx) => {
+                let pct = (kpi.value / kpi.target) * 100;
+                if(kpi.unit === "USD") { // Para costos, menor valor es mejor cumplimiento
+                    pct = (kpi.target / kpi.value) * 100;
+                }
+                pct = Math.min(Math.round(pct), 100);
+
+                let badgeClass = "status-success";
+                let statusWord = "Óptimo";
+                if(pct < 75) { badgeClass = "status-danger"; statusWord = "Crítico"; }
+                else if(pct < 90) { badgeClass = "status-warning"; statusWord = "Precaución"; }
+
+                const card = document.createElement('div');
+                card.className = "card";
+                card.innerHTML = `
+                    <div style="display:flex; justify-content:between; align-items:center;">
+                        <span style="font-size:0.75rem; text-transform:uppercase; font-weight:700; color:var(--text-muted);">${kpi.cat}</span>
+                        <span class="badge-status ${badgeClass}" style="margin-left:auto;">${statusWord}</span>
+                    </div>
+                    <h4 style="margin-top:10px;" contenteditable="true" onblur="updateKpiData(${idx}, 'name', this)">${kpi.name}</h4>
+                    
+                    <div class="kpi-metric-container">
+                        <div>
+                            <span class="kpi-value" contenteditable="true" onblur="updateKpiData(${idx}, 'value', this)">${kpi.value}</span>
+                            <span style="color:var(--text-muted); font-weight:600;">${kpi.unit}</span>
+                        </div>
+                        <span class="kpi-target">Meta: <span contenteditable="true" onblur="updateKpiData(${idx}, 'target', this)">${kpi.target}</span></span>
+                    </div>
+
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: ${pct}%; background-color: ${pct < 75 ? 'var(--danger)' : (pct < 90 ? 'var(--warning)' : 'var(--success)')}"></div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted);">
+                        <span>Eficiencia de Ejecución</span>
+                        <strong>${pct}%</strong>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function updateKpiData(idx, field, element) {
+            const val = element.innerText;
+            if(field === 'value' || field === 'target') {
+                currentData.kpisStore[idx][field] = parseFloat(val) || 0;
+            } else {
+                currentData.kpisStore[idx][field] = val;
+            }
+            autoSaveSilent();
+            renderKpisGrid(); // Recalcula barras dinámicas instantáneamente
+        }
+
+        // --- MATRICES EFI / EFE ENGINE ---
+        function renderEvaluacionTable(tableId, dataArray) {
+            const tbody = document.querySelector(`#${tableId} tbody`);
+            tbody.innerHTML = '';
+            
+            dataArray.forEach((row, i) => {
+                const pond = (row.w * row.c).toFixed(2);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td contenteditable="true" onblur="syncEvaluacionField('${tableId}', ${i}, 'f', this)">${row.f}</td>
+                    <td><input type="number" step="0.01" min="0" max="1" value="${row.w}" oninput="syncEvaluacionField('${tableId}', ${i}, 'w', this)" style="width:65px; border:none; background:transparent; color:var(--text-main);"></td>
+                    <td><input type="number" min="1" max="4" value="${row.c}" oninput="syncEvaluacionField('${tableId}', ${i}, 'c', this)" style="width:50px; border:none; background:transparent; color:var(--text-main); font-weight:600;"></td>
+                    <td style="font-weight:600;">${pond}</td>
+                    <td class="no-print"><span style="color:var(--danger); cursor:pointer; font-weight:700;" onclick="deleteEvaluacionRow('${tableId}', ${i})">&times;</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+            calculateEvaluacionTotals(tableId, dataArray);
+        }
+
+        function syncEvaluacionField(tableId, index, key, element) {
+            const arrayKey = tableId === 'table-efi' ? 'efi' : 'efe';
+            if(key === 'f') {
+                currentData[arrayKey][index][key] = element.innerText;
+            } else {
+                currentData[arrayKey][index][key] = parseFloat(element.value) || 0;
+            }
+            autoSaveSilent();
+            // Re-render sintético sin perder foco completo de inputs rápidos
+            const rowPond = (currentData[arrayKey][index].w * currentData[arrayKey][index].c).toFixed(2);
+            element.parentElement.parentElement.children[3].innerText = rowPond;
+            calculateEvaluacionTotals(tableId, currentData[arrayKey]);
+        }
+
+        function calculateEvaluacionTotals(tableId, dataArray) {
+            let totPeso = 0;
+            let totPond = 0;
+            dataArray.forEach(r => {
+                totPeso += r.w;
+                totPond += (r.w * r.c);
+            });
+            const prefix = tableId === 'table-efi' ? 'efi' : 'efe';
+            document.getElementById(`${prefix}-total-peso`).innerText = totPeso.toFixed(2);
+            document.getElementById(`${prefix}-total-ponderado`).innerText = totPond.toFixed(2);
+        }
+
+        function appendEvaluacionRow(tableId) {
+            const arrayKey = tableId === 'table-efi' ? 'efi' : 'efe';
+            currentData[arrayKey].push({f: "Nuevo factor crítico integrado", w: 0.10, c: 3});
+            renderEvaluacionTable(tableId, currentData[arrayKey]);
+            autoSaveSilent();
+        }
+
+        function deleteEvaluacionRow(tableId, index) {
+            const arrayKey = tableId === 'table-efi' ? 'efi' : 'efe';
+            currentData[arrayKey].splice(index, 1);
+            renderEvaluacionTable(tableId, currentData[arrayKey]);
+            autoSaveSilent();
+        }
+
+        // --- MATRIZ PERFIL COMPETITIVO (MPC ENGINE) ---
+        function renderMpcTable() {
+            const tbody = document.querySelector('#table-mpc tbody');
+            tbody.innerHTML = '';
+            currentData.mpc.forEach((row, i) => {
+                const pPropio = (row.w * row.cp).toFixed(2);
+                const pCompA = (row.w * row.ca).toFixed(2);
+                const pCompB = (row.w * row.cb).toFixed(2);
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td contenteditable="true" onblur="syncMpcField(${i}, 'f', this)">${row.f}</td>
+                    <td><input type="number" step="0.01" value="${row.w}" oninput="syncMpcField(${i}, 'w', this)" style="width:60px; border:none; background:transparent; color:var(--text-main);"></td>
+                    <td><input type="number" min="1" max="4" value="${row.cp}" oninput="syncMpcField(${i}, 'cp', this)" style="width:45px; border:none; background:transparent; color:var(--text-main);"></td>
+                    <td style="font-weight:600;">${pPropio}</td>
+                    <td><input type="number" min="1" max="4" value="${row.ca}" oninput="syncMpcField(${i}, 'ca', this)" style="width:45px; border:none; background:transparent; color:var(--text-main);"></td>
+                    <td style="font-weight:600;">${pCompA}</td>
+                    <td><input type="number" min="1" max="4" value="${row.cb}" oninput="syncMpcField(${i}, 'cb', this)" style="width:45px; border:none; background:transparent; color:var(--text-main);"></td>
+                    <td style="font-weight:600;">${pCompB}</td>
+                    <td class="no-print"><span style="color:var(--danger); cursor:pointer; font-weight:700;" onclick="deleteMpcRow(${i})">&times;</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+            calculateMpcTotals();
+        }
+
+        function syncMpcField(index, key, element) {
+            if(key === 'f') {
+                currentData.mpc[index][key] = element.innerText;
+            } else {
+                currentData.mpc[index][key] = parseFloat(element.value) || 0;
+            }
+            autoSaveSilent();
+            // Re-calcular directo la fila modificada visualmente
+            const r = currentData.mpc[index];
+            const nodes = element.parentElement.parentElement.children;
+            nodes[3].innerText = (r.w * r.cp).toFixed(2);
+            nodes[5].innerText = (r.w * r.ca).toFixed(2);
+            nodes[7].innerText = (r.w * r.cb).toFixed(2);
+            calculateMpcTotals();
+        }
+
+        function calculateMpcTotals() {
+            let tW = 0, tP = 0, tA = 0, tB = 0;
+            currentData.mpc.forEach(r => {
+                tW += r.w; tP += (r.w * r.cp); tA += (r.w * r.ca); tB += (r.w * r.cb);
+            });
+            document.getElementById('mpc-tot-peso').innerText = tW.toFixed(2);
+            document.getElementById('mpc-tot-propio').innerText = tP.toFixed(2);
+            document.getElementById('mpc-tot-compa').innerText = tA.toFixed(2);
+            document.getElementById('mpc-tot-compb').innerText = tB.toFixed(2);
+        }
+
+        function appendMpcRow() {
+            currentData.mpc.push({f: "Nuevo Factor de Éxito Mercado", w: 0.10, cp: 3, ca: 3, cb: 3});
+            renderMpcTable();
+            autoSaveSilent();
+        }
+
+        function deleteMpcRow(index) {
+            currentData.mpc.splice(index, 1);
+            renderMpcTable();
+            autoSaveSilent();
+        }
+
+        // --- ENGINE MATRIZ CUANTITATIVA DE PLANEACIÓN (MCPE) ---
+        function renderMcpeTable() {
+            const tbody = document.querySelector('#table-mcpe tbody');
+            tbody.innerHTML = '';
+            currentData.mcpe.forEach((row, i) => {
+                const taA = (row.w * row.paA).toFixed(2);
+                const taB = (row.w * row.paB).toFixed(2);
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td contenteditable="true" onblur="syncMcpeField(${i}, 'f', this)">${row.f}</td>
+                    <td><input type="number" step="0.01" value="${row.w}" oninput="syncMcpeField(${i}, 'w', this)" style="width:55px; border:none; background:transparent; color:var(--text-main);"></td>
+                    <td><input type="number" min="1" max="4" value="${row.paA}" oninput="syncMcpeField(${i}, 'paA', this)" style="width:40px; border:none; background:transparent; color:var(--text-main);"></td>
+                    <td style="font-weight:600; background:rgba(2, 132, 199, 0.05);">${taA}</td>
+                    <td><input type="number" min="1" max="4" value="${row.paB}" oninput="syncMcpeField(${i}, 'paB', this)" style="width:40px; border:none; background:transparent; color:var(--text-main);"></td>
+                    <td style="font-weight:600; background:rgba(16, 185, 129, 0.05);">${taB}</td>
+                    <td class="no-print"><span style="color:var(--danger); cursor:pointer; font-weight:700;" onclick="deleteMcpeRow(${i})">&times;</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+            calculateMcpeTotals();
+        }
+
+        function syncMcpeField(index, key, element) {
+            if(key === 'f') {
+                currentData.mcpe[index][key] = element.innerText;
+            } else {
+                currentData.mcpe[index][key] = parseFloat(element.value) || 0;
+            }
+            autoSaveSilent();
+            const r = currentData.mcpe[index];
+            const nodes = element.parentElement.parentElement.children;
+            nodes[3].innerText = (r.w * r.paA).toFixed(2);
+            nodes[5].innerText = (r.w * r.paB).toFixed(2);
+            calculateMcpeTotals();
+        }
+
+        function calculateMcpeTotals() {
+            let tW = 0, tA = 0, tB = 0;
+            currentData.mcpe.forEach(r => {
+                tW += r.w; tA += (r.w * r.paA); tB += (r.w * r.paB);
+            });
+            document.getElementById('mcpe-tot-peso').innerText = tW.toFixed(2);
+            document.getElementById('mcpe-tot-a').innerText = tA.toFixed(2);
+            document.getElementById('mcpe-tot-b').innerText = tB.toFixed(2);
+
+            const recText = document.getElementById('mcpe-recommendation-text');
+            if(tA > tB) {
+                recText.innerText = `Estrategia A ("Penetración Nacional mediante Costos") con puntuación sumada de ${tA.toFixed(2)} sobre ${tB.toFixed(2)}. Altamente prioritaria por el canal de distribución tradicional.`;
+            } else if(tB > tA) {
+                recText.innerText = `Estrategia B ("Diversificación Saludable") con puntuación sumada de ${tB.toFixed(2)} sobre ${tA.toFixed(2)}. Recomendada para mitigar penalizaciones impositivas de largo alcance.`;
+            } else {
+                recText.innerText = "Ambas estrategias presentan el mismo nivel de idoneidad cuantitativa. Se sugiere la ejecución secuencial o híbrida.";
+            }
+        }
+
+        function appendMcpeRow() {
+            currentData.mcpe.push({f: "Nuevo Factor Decisorio", w: 0.10, paA: 3, paB: 2});
+            renderMcpeTable();
+            autoSaveSilent();
+        }
+
+        function deleteMcpeRow(index) {
+            currentData.mcpe.splice(index, 1);
+            renderMcpeTable();
+            autoSaveSilent();
+        }
+
+        // --- VECTOR CONTROL MATRIZ PEYEA (ALGORITMO CARTESIANO) ---
+        function calculatePeyea() {
+            const ff = parseFloat(document.getElementById('peyea-ff').value) || 0;
+            const vc = parseFloat(document.getElementById('peyea-vc').value) || 0;
+            const fi = parseFloat(document.getElementById('peyea-fi').value) || 0;
+            const ee = parseFloat(document.getElementById('peyea-ee').value) || 0;
+
+            // Guardado en memoria operacional
+            currentData.peyea = { ff, vc, fi, ee };
+            autoSaveSilent();
+
+            const coordX = fi + vc;
+            const coordY = ff + ee;
+
+            document.getElementById('peyea-coord-x').innerText = coordX.toFixed(2);
+            document.getElementById('peyea-coord-y').innerText = coordY.toFixed(2);
+
+            // Determinar Perfil Estratégico General Directriz
+            let perfil = "Conservadora";
+            if (coordX >= 0 && coordY >= 0) perfil = "Agresiva";
+            else if (coordX >= 0 && coordY < 0) perfil = "Competitiva";
+            else if (coordX < 0 && coordY >= 0) perfil = "Conservadora";
+            else if (coordX < 0 && coordY < 0) perfil = "Defensiva";
+
+            document.getElementById('peyea-profile-result').innerText = perfil;
+            drawPeyeaCanvas(coordX, coordY);
+        }
+
+        function drawPeyeaCanvas(coordX, coordY) {
+            const canvas = document.getElementById('peyea-canvas');
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+            const center = w / 2;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // Dibujo de Ejes Planos Cartesianos
+            ctx.strokeStyle = '#94a3b8';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(0, center); ctx.lineTo(w, center);
+            ctx.moveTo(center, 0); ctx.lineTo(center, h);
+            ctx.stroke();
+
+            // Etiquetas Cuadrantes
+            ctx.fillStyle = '#64748b';
+            ctx.font = '10px Inter';
+            ctx.fillText('FF (Financiera)', center + 5, 15);
+            ctx.fillText('FI (Industrial)', w - 70, center - 5);
+            ctx.fillText('VC (Competitiva)', 5, center - 5);
+            ctx.fillText('EE (Entorno)', center + 5, h - 10);
+
+            // Dibujar el Vector Resultante Magnitud
+            // Escala matemática del canvas: un valor máximo de 6 equivale a la mitad del canvas (center)
+            const scale = center / 6;
+            const targetX = center + (coordX * scale);
+            const targetY = center - (coordY * scale); // El eje Y gráfico está invertido en navegadores
+
+            ctx.strokeStyle = 'var(--accent-color)';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(center, center);
+            ctx.lineTo(targetX, targetY);
+            ctx.stroke();
+
+            // Cabeza del Vector flecha indicadora
+            ctx.fillStyle = 'var(--danger)';
+            ctx.beginPath();
+            ctx.arc(targetX, targetY, 5, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+
+        // --- SISTEMAS DE GRÁFICOS COMPLEMENTARIOS (CHART.JS) ---
+        let radarChart, lineChart;
+        function initCharts() {
+            const ctxRadar = document.getElementById('chart-kpis-radar').getContext('2d');
+            radarChart = new Chart(ctxRadar, {
+                type: 'radar',
+                data: {
+                    labels: ['Financiera', 'Clientes', 'Procesos Internos', 'Aprendizaje e Innovación'],
+                    datasets: [{
+                        label: 'Rendimiento Objetivo Actual',
+                        data: [88, 92, 79, 85],
+                        backgroundColor: 'rgba(2, 132, 199, 0.2)',
+                        borderColor: '#0284c7',
+                        borderWidth: 2
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            const ctxLine = document.getElementById('chart-kpis-line').getContext('2d');
+            lineChart = new Chart(ctxLine, {
+                type: 'line',
+                data: {
+                    labels: ['2023', '2024', '2025', '2026 (Actual)'],
+                    datasets: [{
+                        label: 'Volt Corp %',
+                        data: [32, 39, 45, 48.5],
+                        borderColor: '#10b981',
+                        tension: 0.3,
+                        fill: false
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        // --- ARRASTRE E INTERACTIVIDAD DE MATRICES (BCG Y MCKINSEY DRAG & DROP) ---
+        function setupDragAndDrop() {
+            const items = document.querySelectorAll('.draggable-item');
+            const containers = document.querySelectorAll('.interactive-matrix-container');
+
+            items.forEach(item => {
+                item.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', item.getAttribute('data-id'));
+                });
+            });
+
+            containers.forEach(container => {
+                container.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                });
+
+                container.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    const id = e.dataTransfer.getData('text/plain');
+                    const item = document.querySelector(`[data-id="${id}"]`);
+                    
+                    if(item && container.contains(item)) {
+                        const rect = container.getBoundingClientRect();
+                        // Conversión de coordenadas de caída a porcentajes para resposividad íntegra
+                        let leftPct = ((e.clientX - rect.left) / rect.width) * 100;
+                        let topPct = ((e.clientY - rect.top) / rect.height) * 100;
+
+                        // Restricciones de bordes
+                        leftPct = Math.max(0, Math.min(leftPct, 90));
+                        topPct = Math.max(0, Math.min(topPct, 90));
+
+                        item.style.left = `${leftPct}%`;
+                        item.style.top = `${topPct}%`;
+
+                        // Guardar coordenadas espaciales
+                        currentData.dragPositions[id] = { top: topPct, left: leftPct };
+                        autoSaveSilent();
+                    }
+                });
+            });
+        }
+
+        function applyDragPositions() {
+            Object.keys(currentData.dragPositions).forEach(id => {
+                const item = document.querySelector(`[data-id="${id}"]`);
+                if(item) {
+                    item.style.top = `${currentData.dragPositions[id].top}%`;
+                    item.style.left = `${currentData.dragPositions[id].left}%`;
+                }
+            });
+        }
+
+        // --- MOTOR DE PERSISTENCIA AUTOMÁTICA LOCALSTORAGE ---
+        function autoSaveSilent() {
+            localStorage.setItem('SGE_DATA_STORE', JSON.stringify(currentData));
+            updateLastModifiedTimestamp();
+        }
+
+        function saveToLocalStorage() {
+            autoSaveSilent();
+            alert("¡Excelente! Toda la configuración e información estratégica del SGE se ha consolidado correctamente en el LocalStorage.");
+        }
+
+        function resetDefaultData() {
+            if(confirm("¿Estás seguro de que deseas reestablecer los datos originales de Volt Ecuador? Esto sobrescribirá los cambios editados actualizados.")) {
+                currentData = JSON.parse(JSON.stringify(DEFAULT_SYSTEM_DATA));
+                localStorage.setItem('SGE_DATA_STORE', JSON.stringify(currentData));
+                renderAllSections();
+                calculatePeyea();
+                alert("Datos de la suite de Volt Ecuador restaurados.");
+            }
+        }
+
+        // --- EXPORTACIÓN E IMPORTACIÓN DE CONFIGURACIONES JSON ---
+        function exportDataJSON() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentData, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `Plan_Estrategico_${currentData.empresaNombre.replace(/\s+/g, '_')}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function triggerImportJSON() {
+            document.getElementById('json-file-input').click();
+        }
+
+        function importDataJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    // Verificación simple de integridad estructural del objeto cargado
+                    if(imported.empresaNombre && imported.mision) {
+                        currentData = imported;
+                        autoSaveSilent();
+                        renderAllSections();
+                        calculatePeyea();
+                        alert("¡Configuración de Negocio JSON Importada con Éxito Corporativo!");
+                    } else {
+                        alert("El archivo no cuenta con la estructura canónica requerida.");
+                    }
+                } catch(err) {
+                    alert("Error en la lectura o parseo del archivo JSON.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // --- BUSCADOR SEMÁNTICO GLOBAL ---
+        function executeGlobalSearch() {
+            const query = document.getElementById('global-search').value.toLowerCase();
+            if(!query) {
+                // Quitar resaltados si la query está limpia
+                document.querySelectorAll('.card, tr, td').forEach(el => el.style.opacity = "1");
+                return;
+            }
+
+            // Filtro visual rápido opacando elementos que no matchean la cadena de texto de la directiva
+            document.querySelectorAll('.card').forEach(card => {
+                if(card.innerText.toLowerCase().includes(query)) {
+                    card.style.opacity = "1";
+                    card.style.border = "1px solid var(--sidebar-active)";
+                } else {
+                    card.style.opacity = "0.25";
+                    card.style.border = "1px solid var(--border-color)";
+                }
+            });
+        }
+    </script>
+</body>
+</html>
